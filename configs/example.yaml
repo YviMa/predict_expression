@@ -1,0 +1,25 @@
+experiment: 
+  name: arbitrary_model_experiment_1
+  description: "optional description"
+
+data: 
+  data_dir: name_of_raw_data_directory
+  preprocessed_dir: name_of_preprocessed_data_directory
+
+preprocessing:
+  scaling: name_of_scaler
+  feature_selection: name_of_feature_selection_method
+
+training:
+  estimator: model_name
+  parameters:
+    model_param_1:
+    model_param_2:
+  tune: true
+  cv: 5
+  scoring: "mean_squared_error"r
+  random_state: 42
+
+evaluation:
+  n_splits: 5
+  random_states: [0, 1, 2, 3, 4]

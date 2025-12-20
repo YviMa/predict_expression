@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+
+# Conda / virtual environments
+.env/
+.venv/
+env/
+*.Conda
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Vscode
+.vscode/
+
+# Data
+data/preprocessed/

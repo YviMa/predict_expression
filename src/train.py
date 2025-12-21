@@ -41,8 +41,10 @@ if config["training"]["tune"]==True:
     Tuner=tuning.get_tuner(config["training"]["tuner"], {"estimator": estimator, "config":config["training"]})
     model, best_params = Tuner.tune(X_train,y_train)
 
-    with open(os.path.join(exp_dir,"tuned_params.pkl"), "wb") as f:
-        pickle.dump(best_params, f)
+    #with open(os.path.join(exp_dir,"tuned_params.pkl"), "wb") as f:
+        #pickle.dump(best_params, f)
+    with open(os.path.join(exp_dir,"tuned_params.json"), "w") as f:
+        json.dump(best_params, f, indent=2)
 
 else:
     try:

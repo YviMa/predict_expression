@@ -29,17 +29,19 @@ x_scalers = config['preprocessing']['x_scaling']
 y_scalers = config['preprocessing']['y_scaling']
 
 X_train, X_test = apply_scaling(X_train, X_test, x_scalers)
-y_train, y_test = apply_scaling(y_train, y_test, y_scalers)
+y_train, y_test = apply_scaling(y_train.reshape(-1,1), y_test.reshape(-1,1), y_scalers)
+y_train = y_train.ravel()
+y_test = y_test.ravel()
      
 
-if config["training"]["tune"]=="true":
+if config["training"]["tune"]==True:
 
     estimator = model_registry.create_model(config["training"]["estimator"])
 
-    Tuner=tuning.get_tuner(estimator, config["training"])
+    Tuner=tuning.get_tuner(config["training"]["tuner"], {"estimator": estimator, "config":config["training"]})
     model, best_params = Tuner.tune(X_train,y_train)
 
-    with open(os.join(exp_dir,"tuned_params.pkl"), "wb") as f:
+    with open(os.path.join(exp_dir,"tuned_params.pkl"), "wb") as f:
         pickle.dump(best_params, f)
 
 else:
@@ -57,7 +59,7 @@ y_pred = model.predict(X_test)
 # compute RMSE and pearson correlation
 metrics_dict = compute_metrics(y_test, y_pred)
 
-with open(os.join(exp_dir,"metrics.json"), "w") as f:
+with open(os.path.join(exp_dir,"metrics.json"), "w") as f:
         json.dump(metrics_dict, f, indent=2)
 
 

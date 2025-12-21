@@ -35,7 +35,7 @@ def compute_metrics(y_test, y_pred):
     RMSE = mean_squared_error(y_test, y_pred)
     pearson_corr = pearsonr(y_test, y_pred)
 
-    return {"RMSE": RMSE, "pearson_corr": pearson_corr}
+    return {"RMSE": RMSE, "pearsonr": pearson_corr[0]}
 
 def normalize_config(config):
     cfg = copy.deepcopy(config)

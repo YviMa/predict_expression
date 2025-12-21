@@ -5,6 +5,7 @@ import json
 import hashlib
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from datetime import datetime
 from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr
@@ -46,3 +47,17 @@ def normalize_config(config):
 def hash_config(config, length=8):
     canonical = json.dumps(config, sort_keys=True)
     return hashlib.sha256(canonical.encode()).hexdigest()[:length]
+
+def plot_training_results(y_test, y_pred, exp_dir):
+    fig, axs = plt.subplots(1,2, figsize=(12,4))
+
+    axs[0].scatter(y_test, y_pred)
+    axs[0].set_xlabel("y_test")
+    axs[0].set_ylabel("y_pred")
+
+    axs[1].scatter(np.arange(len(y_test)), y_test)
+    axs[1].scatter(np.arange(len(y_pred)), y_pred)
+    axs[1].set_xlabel("sample index")
+    axs[1].set_ylabel("expression value")
+
+    fig.savefig(os.path.join(exp_dir,"training_plots.png"), format='PNG')

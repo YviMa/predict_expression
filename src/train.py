@@ -1,13 +1,13 @@
 import argparse
 import model_registry
 import tuning
-import pickle
+import matplotlib.pyplot as plt
 import json
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from os.path import join
-from utils import load_config, set_up_experiment, load_data, compute_metrics
+from utils import load_config, set_up_experiment, load_data, compute_metrics, plot_training_results
 from scaling import apply_scaling
 
 # parse the yaml file 
@@ -57,6 +57,9 @@ else:
     model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
+
+if config["training"]["plot"] == True:
+    plot_training_results(y_test, y_pred, exp_dir)
 
 # compute RMSE and pearson correlation
 metrics_dict = compute_metrics(y_test, y_pred)

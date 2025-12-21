@@ -41,7 +41,6 @@ def compute_metrics(y_test, y_pred):
 def normalize_config(config):
     cfg = copy.deepcopy(config)
     cfg.pop("experiment", None)
-    cfg.pop("data", None)
     return cfg
 
 def hash_config(config, length=8):

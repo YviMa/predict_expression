@@ -21,7 +21,7 @@ config = load_config(args.config)
 # creates separate directory for each experiment
 exp_dir = set_up_experiment(config)
 
-X, y = load_data(config['data']['preprocessed_dir'])
+X, y = load_data(os.path.join(config['data']['data_dir'], config['data']['file_name']))
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 

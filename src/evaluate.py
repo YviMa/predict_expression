@@ -21,8 +21,7 @@ X, y = load_data(os.path.join(config['data']['data_dir'], config['data']['file_n
 random_states=config["evaluation"]["random_states"]
 
 if config["training"]["tune"]==True:
-    #with open(os.path.join(exp_dir, "tuned_params.pkl"), "rb") as f:
-        #params = pickle.load(f)
+    
     with open(os.path.join(exp_dir, "tuned_params.json"), "r") as f:
         params = json.load(f)
 else:

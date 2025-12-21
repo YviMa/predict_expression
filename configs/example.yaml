@@ -1,23 +1,41 @@
 experiment: 
-  name: arbitrary_model_experiment_1
-  description: "optional description"
+  name: example_experiment
+  description: "Controlled experiment using elastic net for establishing minimum performance."
 
 data: 
-  data_dir: name_of_raw_data_directory
-  preprocessed_dir: name_of_preprocessed_data_directory
+  file_name: gene_1.txt
+  data_dir: data/raw
+  preprocessed_dir: data/preprocessed/baseline_elasticnet
 
 preprocessing:
-  scaling: name_of_scaler
-  feature_selection: name_of_feature_selection_method
+  save_preprocessed: true
+  x_scaling: 
+    - scaler: StandardScaler
+      params: {}
+  y_scaling:
+    - scaler: log2
+      params: {}
+    - scaler: StandardScaler
+      params: {}
+  feature_selection:
+    apply: false 
+    method: SelectWithSklearn
+    estimator: elastic_net
+    params: {}
+    tuning:
+      tune: false 
+      tuner: gridsearch_cv
+      scoring: "mean_squared_error"
+      param_grid: {}
+      cv_folds: 5
+
 
 training:
-  estimator: model_name
-  parameters:
-    model_param_1:
-    model_param_2:
+  estimator: ElasticNet
   tune: true
+  param_grid: {}
   cv: 5
-  scoring: "mean_squared_error"
+  scoring: "neg_mean_squared_error"
   random_state: 42
 
 evaluation:

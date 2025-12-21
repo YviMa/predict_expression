@@ -10,8 +10,9 @@ def get_scaler(name, params={}):
     return cls(**params)
 
 def apply_scaling(X_train, X_test, scaler_list):
-    
-    for scaler in scaler_list:
+
+    for scaler_name in scaler_list:
+     scaler = scaler_name()
      X_train = scaler.fit_transform(X_train)
      X_test = scaler.transform(X_test)
 

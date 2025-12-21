@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 import pickle
 import json
+import yaml
 import os
 from sklearn.model_selection import train_test_split
 from utils import load_config, load_data, compute_metrics
@@ -9,12 +10,16 @@ from scaling import apply_scaling
 from model_registry import create_model
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--config", required=True, help="Path to YAML config")
+parser.add_argument("--config", required=False, help="Path to YAML config")
 parser.add_argument("--exp_dir", required=True, help="Path to experiment folder")
 args = parser.parse_args()
 
-config = load_config(args.config)
 exp_dir = args.exp_dir
+
+if args.config is not None:
+    config = load_config(args.config)
+else:
+    config = load_config(os.path.join(exp_dir, "config.yaml"))
 
 X, y = load_data(os.path.join(config['data']['data_dir'], config['data']['file_name']))
 

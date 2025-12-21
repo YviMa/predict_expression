@@ -17,7 +17,7 @@ def load_config(path):
 def set_up_experiment(config):
     base_name = config["experiment"]["name"]
     exp_id = str(hash_config(normalize_config(config)))
-    folder_name = config["experiment"]["name"] + "_" + exp_id
+    folder_name = base_name + "_" + exp_id
     exp_dir = os.path.join("experiments", folder_name)
     os.makedirs(exp_dir, exist_ok=True)
 

@@ -1,0 +1,56 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+  preprocessed_dir: data/preprocessed/baseline_elasticnet
+evaluation:
+  n_splits: 5
+  random_states:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  test_size: 0.3
+experiment:
+  description: Controlled experiment using elastic net for establishing minimum performance.
+  name: baseline_elasticnet_gene_3
+preprocessing:
+  feature_selection:
+    apply: false
+  save_preprocessed: true
+  x_scaling:
+  - params: {}
+    scaler: standard
+  y_scaling:
+  - params: {}
+    scaler: log2
+  - params: {}
+    scaler: standard
+training:
+  cv: 5
+  estimator: elastic_net
+  param_grid:
+    alpha:
+    - 0.1
+    - 0.2
+    - 0.3
+    - 0.5
+    - 1.0
+    - 5
+    - 10
+    l1_ratio:
+    - 0.1
+    - 0.2
+    - 0.3
+    - 0.4
+    - 0.5
+    - 0.6
+    - 0.7
+    - 0.8
+    - 0.9
+  plot: true
+  random_state: 42
+  scoring: neg_mean_squared_error
+  test_size: 0.3
+  tune: true
+  tuner: gridsearch_cv

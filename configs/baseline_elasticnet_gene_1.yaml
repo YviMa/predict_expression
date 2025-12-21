@@ -1,0 +1,37 @@
+experiment: 
+  name: baseline_elasticnet_gene_1
+  description: "Controlled experiment using elastic net for establishing minimum performance."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+  preprocessed_dir: data/preprocessed/baseline_elasticnet
+
+preprocessing:
+  save_preprocessed: true
+  x_scaling: 
+    - scaler: standard
+      params: {}
+  y_scaling:
+    - scaler: log2
+      params: {}
+    - scaler: standard
+      params: {}
+  feature_selection:
+    apply: false 
+
+training:
+  estimator: elastic_net
+  tune: true
+  plot: true
+  tuner: gridsearch_cv
+  param_grid: {"alpha": [0.1, 0.2, 0.3, 0.5, 1.0, 5, 10], "l1_ratio": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}
+  cv: 5
+  scoring: "neg_mean_squared_error"
+  random_state: 42
+  test_size: 0.3
+
+evaluation:
+  test_size: 0.3
+  n_splits: 5
+  random_states: [0, 1, 2, 3, 4]

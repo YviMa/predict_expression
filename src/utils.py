@@ -34,9 +34,17 @@ def load_data(data_dir):
 
 def compute_metrics(y_test, y_pred):
     RMSE = mean_squared_error(y_test, y_pred)
-    pearson_corr = pearsonr(y_test, y_pred)
 
-    return {"RMSE": RMSE, "pearsonr": pearson_corr[0]}
+    if len(np.unique(y_test))==1:
+        print("pearsonr undefined: all test samples are equal")
+        pearson_corr=float('NaN')
+    elif len(np.unique(y_pred))==1:
+        print("pearsonr undefined, all predicted samples are equal, value: "+str(y_pred[0]))
+        pearson_corr=float('NaN')
+    else:
+        pearson_corr = pearsonr(y_test, y_pred)[0]
+
+    return {"RMSE": RMSE, "pearsonr": pearson_corr}
 
 def normalize_config(config):
     cfg = copy.deepcopy(config)

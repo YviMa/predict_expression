@@ -9,14 +9,14 @@ def get_scaler(name, params={}):
     cls = SCALER_REGISTRY[name]
     return cls(**params)
 
-def apply_scaling(X_train, X_test, config):
-    scaler_list = config["preprocessing"]["scaling"]
-    for item in scaler_list:
-     scaler = get_scaler(item["scaler"], item["params"])
-     X_train = scaler.fit_transform(X_train)
-     X_test = scaler.transform(X_test)
+def apply_scaling(X_train, X_test, scaler_list):
 
-     return X_train, X_test
+    for item in scaler_list:
+        scaler = get_scaler(item["scaler"], item["params"])
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
+
+    return X_train, X_test
     
 
 class LogScaler:

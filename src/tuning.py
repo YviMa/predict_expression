@@ -2,10 +2,10 @@ from sklearn.model_selection import GridSearchCV
 
 TUNING_REGISTRY = {}
 
-def get_tuner(name):
+def get_tuner(name, params=None):
     if name not in TUNING_REGISTRY:
         raise ValueError(f"Unknown tuner: {name}")
-    return TUNING_REGISTRY[name]
+    return TUNING_REGISTRY[name](**params)
 
 class BaseTuner:
     def __init__(self, estimator, config):

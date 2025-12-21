@@ -17,7 +17,7 @@ training:
     model_param_2:
   tune: true
   cv: 5
-  scoring: "mean_squared_error"r
+  scoring: "mean_squared_error"
   random_state: 42
 
 evaluation:

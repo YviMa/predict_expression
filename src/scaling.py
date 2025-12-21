@@ -3,7 +3,6 @@ from sklearn.preprocessing import StandardScaler
 
 SCALER_REGISTRY = {
     "standard": StandardScaler,
-    "log2": LogScaler
 }
 
 def get_scaler(name, params={}):
@@ -18,3 +17,4 @@ class LogScaler:
     def fit_transform(self, X):
         return self.fit(X).transform(X)
 
+SCALER_REGISTRY["log2"] = LogScaler

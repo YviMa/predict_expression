@@ -9,6 +9,15 @@ def get_scaler(name, params={}):
     cls = SCALER_REGISTRY[name]
     return cls(**params)
 
+def apply_scaling(X_train, X_test, scaler_list):
+    
+    for scaler in scaler_list:
+     X_train = scaler.fit_transform(X_train)
+     X_test = scaler.transform(X_test)
+
+     return X_train, X_test
+    
+
 class LogScaler:
     def fit(self, X):
         return self

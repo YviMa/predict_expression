@@ -1,8 +1,6 @@
 from sklearn.model_selection import GridSearchCV
 
-TUNING_REGISTRY = {
-    "gridsearch_cv": SklearnGridTuner
-}
+TUNING_REGISTRY = {}
 
 def get_tuner(name):
     if name not in TUNING_REGISTRY:
@@ -33,3 +31,5 @@ class SklearnGridTuner(BaseTuner):
         )
         grid.fit(X, y)
         return grid.best_estimator_, grid.best_params_
+
+TUNING_REGISTRY["gridsearch_cv"] = SklearnGridTuner

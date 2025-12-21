@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from os.path import join
 from utils import load_config, set_up_experiment, load_data, compute_metrics
-
+from scaling import apply_scaling
 
 # parse the yaml file 
 parser = argparse.ArgumentParser()
@@ -22,6 +22,13 @@ exp_dir = set_up_experiment(config)
 X, y = load_data(config['data']['preprocessed_dir'])
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+x_scalers = config['preprocessing']['x_scaling']
+y_scalers = config['preprocessing']['y_scaling']
+
+X_train, X_test = apply_scaling(X_train, X_test, x_scalers)
+y_train, y_test = apply_scaling(y_train, y_test, y_scalers)
+     
 
 if config["training"]["tune"]=="true":
 

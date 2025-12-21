@@ -1,8 +1,11 @@
 import yaml
 import os
+import copy
+import json
+import hashlib
 import numpy as np
-from datetime import datetime
 import pandas as pd
+from datetime import datetime
 from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr
 
@@ -12,10 +15,9 @@ def load_config(path):
 
 def set_up_experiment(config):
     base_name = config["experiment"]["name"]
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    exp_id = f"{base_name}_{timestamp}"
-
-    exp_dir = os.path.join("experiments", exp_id)
+    exp_id = str(hash_config(normalize_config(config)))
+    folder_name = config["experiment"]["name"] + "_" + exp_id
+    exp_dir = os.path.join("experiments", folder_name)
     os.makedirs(exp_dir, exist_ok=True)
 
     with open(os.path.join(exp_dir, "config.yaml"), 'w') as f:
@@ -34,3 +36,13 @@ def compute_metrics(y_test, y_pred):
     pearson_corr = pearsonr(y_test, y_pred)
 
     return {"RMSE": RMSE, "pearson_corr": pearson_corr}
+
+def normalize_config(config):
+    cfg = copy.deepcopy(config)
+    cfg.pop("experiment", None)
+    cfg.pop("data", None)
+    return cfg
+
+def hash_config(config, length=8):
+    canonical = json.dumps(config, sort_keys=True)
+    return hashlib.sha256(canonical.encode()).hexdigest()[:length]

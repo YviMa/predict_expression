@@ -23,7 +23,9 @@ exp_dir = set_up_experiment(config)
 
 X, y = load_data(os.path.join(config['data']['data_dir'], config['data']['file_name']))
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, 
+                                                    test_size=config["training"]["test_size"], 
+                                                    random_state=config["training"]["random_state"])
 
 x_scalers = config['preprocessing']['x_scaling']
 y_scalers = config['preprocessing']['y_scaling']
@@ -40,9 +42,7 @@ if config["training"]["tune"]==True:
 
     Tuner=tuning.get_tuner(config["training"]["tuner"], {"estimator": estimator, "config":config["training"]})
     model, best_params = Tuner.tune(X_train,y_train)
-
-    #with open(os.path.join(exp_dir,"tuned_params.pkl"), "wb") as f:
-        #pickle.dump(best_params, f)
+    
     with open(os.path.join(exp_dir,"tuned_params.json"), "w") as f:
         json.dump(best_params, f, indent=2)
 

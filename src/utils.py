@@ -1,7 +1,8 @@
 import yaml
 import shutil
+import os
+import numpy as np
 from datetime import datetime
-from os.path import join
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr
@@ -11,14 +12,15 @@ def load_config(path):
         return yaml.safe_load(f)
 
 def set_up_experiment(config):
-    base_name = config["experiment"]["id"]
+    base_name = config["experiment"]["name"]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     exp_id = f"{base_name}_{timestamp}"
 
-    exp_dir = os.path.join("../experiments", exp_id)
+    exp_dir = os.path.join("experiments", exp_id)
     os.makedirs(exp_dir, exist_ok=True)
 
-    shutil.copy(args.config, os.path.join(exp_dir, "config.yaml"))
+    with open(os.path.join(exp_dir, "config.yaml"), 'w') as f:
+        yaml.dump(config, f)
     return exp_dir
 
 def load_data(data_dir):

@@ -1,5 +1,4 @@
 import yaml
-import shutil
 import os
 import numpy as np
 from datetime import datetime
@@ -24,7 +23,7 @@ def set_up_experiment(config):
     return exp_dir
 
 def load_data(data_dir):
-    gene = np.loadtxt(data_dir,delimiter='\t', skiprows=1)
+    gene = pd.read_csv(data_dir, delimiter='\t', header=0)
     X = gene.iloc[:,1:-1].to_numpy()
     y = gene.iloc[:,-1].to_numpy()
     

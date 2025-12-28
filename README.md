@@ -31,3 +31,9 @@ requirements.txt is for specifying necessary modules and their versions. **Impor
 5. **Training**: Find the best hyperparameters, for example using scikit-learns GridsearchCV(). K-fold cross-validation is strongly recommended. You should at least save the winning set of parameters as pickle file.
 6. **Evaluation**: Evaluate the best model that you have found on multiple train-test-splits to obtain an average test error. **Minimum set of metrics** required are the root mean-squared-error and the pearson correlation coefficient, implemented automatically by the function compute_metrics() in src/utils.py. Feel free to add more metrics.
 4. **Documentation**: Once you run an experiment, the corresponding .yaml file will automatically be saved in the experiments folder. Make sure to document relevant information about the experiment in the notes.md file contained in the experiments folder.
+
+# 2 Running code
+1. Make a .yaml config file in the configs folder specifying all preprocessing, training, hyperparameter tuning and validation options
+2. From the top project folder, in your command line run `python3 src/train.py --config configs/your_config_file.yaml'
+3. From the top project folder, in your command line run `python3 src/evaluate.py --exp_dir experiments/your_experiment_dir'
+4. Check that all files were correctly created and filled in the respective experiment directory.

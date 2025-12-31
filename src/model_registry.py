@@ -1,9 +1,11 @@
 from sklearn.linear_model import ElasticNet
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 MODEL_REGISTRY = {
     "elastic_net": ElasticNet,
     "gradient_boost": GradientBoostingRegressor,
+    "random_forest": RandomForestRegressor
 }
 
 def create_model(name, params=None):

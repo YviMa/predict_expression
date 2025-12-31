@@ -18,3 +18,9 @@ data/preprocessed/
 
 # Experiments
 experiments/**/*.png
+
+# Bash automation
+*.sh
+
+# Logs
+*.log

@@ -11,6 +11,7 @@ from model_registry import create_model
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--config", required=False, help="Path to YAML config")
+parser.add_argument("--override_arg", required=False, help="Argument and value to be overriden")
 parser.add_argument("--exp_dir", required=True, help="Path to experiment folder")
 args = parser.parse_args()
 
@@ -29,6 +30,10 @@ if config["training"]["tune"]==True:
     
     with open(os.path.join(exp_dir, "tuned_params.json"), "r") as f:
         params = json.load(f)
+
+    if args.override_arg is not None:
+        replacement = eval(args.override_arg)
+        params.update(replacement)
 else:
     params = config["training"]["parameters"]
 

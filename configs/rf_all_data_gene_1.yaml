@@ -1,0 +1,38 @@
+experiment: 
+  name: rf_all_data_gene_1
+  description: "Random forest tuned on all data."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+  preprocessed_dir: data/preprocessed/random_forest
+
+preprocessing:
+  save_preprocessed: true
+  x_scaling: 
+    - scaler: standard
+      params: {}
+  y_scaling:
+    - scaler: log2
+      params: {}
+    - scaler: standard
+      params: {}
+  feature_selection:
+    apply: false 
+
+training:
+  estimator: random_forest
+  tune: true
+  tuner: gridsearch_cv
+  param_grid: {"n_estimators": [1000], 
+  "criterion": ["squared_error", "absolute_error"],
+  "max_features": ["sqrt", 0.33, 0.25, 0.4]
+  }
+  cv: 5
+  scoring: "neg_mean_squared_error"
+
+evaluation:
+  plot: true
+  test_size: 0.3
+  n_splits: 5
+  random_states: [0, 1, 2, 3, 4]

@@ -7,25 +7,34 @@ FEATURE_SELECTION_REGISTRY = {
     "variance_threshold": VarianceThreshold
 }
 
+def get_feature_selector(X,y,config, params=None):
+    name = config["selector"]
+    if name not in FEATURE_SELECTION_REGISTRY:
+        raise ValueError(f"Unknown feature selector: {name}")
+    if params==None:
+        params = {}
+    return FEATURE_SELECTION_REGISTRY[name](X,y,config, **params)
+
 class SelectWithSklearn(SelectFromModel):
     def __init__(self, X, y, config, *, threshold = 1e-5, prefit=False, norm_order = 1, max_features = None, importance_getter = "auto"):
         self.config = config
-        self.prefit=prefit
-        tune = self.config["preprocessing"]["feature_selection"]["tuning"]["tune"]
-        estimator_name = self.config["preprocessing"]["feature_selection"]["estimator"]
+        self.X = X
+        self.y = y
+        tune = self.config["tuning"]["tune"]
+        estimator_name = self.config["estimator"]
         
         if tune == True:
             self.estimator = create_model(estimator_name)
             self.tune(X,y)
         else:
-            params = self.config["preprocessing"]["feature_selection"]["params"]
-            self.estimator = create_model(estimator_name, **params)
+            params = self.config["params"]
+            self.estimator = create_model(estimator_name, params)
 
-        super().__init__(self.estimator, threshold=threshold, prefit=self.prefit, norm_order=norm_order, max_features=max_features, importance_getter=importance_getter)
+        super().__init__(self.estimator, threshold=threshold, prefit=prefit, norm_order=norm_order, max_features=max_features, importance_getter=importance_getter)
 
 
     def tune(self, X, y):
-        tuning_config = self.config["preprocessing"]["feature_selection"]["tuning"]
+        tuning_config = self.config["tuning"]
         tuner_name = tuning_config["tuner"]
         tuner = tuning.get_tuner(tuner_name, {"estimator": self.estimator, "config": tuning_config})
         best_estimator, best_params = tuner.tune(X,y)

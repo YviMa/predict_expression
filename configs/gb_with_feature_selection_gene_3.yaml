@@ -1,9 +1,9 @@
 experiment: 
-  name: gb_feature_selection_gene_1
+  name: gb_feature_selection_gene_3
   description: "Gradient boosting with feature selection via elastic net."
 
 data: 
-  file_name: gene_1.txt
+  file_name: gene_3.txt
   data_dir: data/raw
   preprocessed_dir: data/preprocessed/gradient_boost
 
@@ -22,7 +22,7 @@ preprocessing:
     selector: sklearn_model
     estimator: elastic_net
     params:
-      alpha: 0.3
+      alpha: 0.5
       l1_ratio: 0.1
     tuning:
       tune: false

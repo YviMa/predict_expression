@@ -68,3 +68,10 @@ def plot_training_results(y_test, y_pred, exp_dir):
     axs[1].set_ylabel("expression value")
 
     fig.savefig(os.path.join(exp_dir,"training_plots.png"), format='PNG')
+
+def plot_feature_importances(coefs, exp_dir):
+    plt.plot(np.sort(coefs))
+    plt.xlabel('coef index')
+    plt.ylabel('coef value')
+
+    plt.savefig(os.path.join(exp_dir,"feature_importance.png"), format='PNG')

@@ -75,3 +75,7 @@ def plot_feature_importances(coefs, exp_dir):
     plt.ylabel('coef value')
 
     plt.savefig(os.path.join(exp_dir,"feature_importance.png"), format='PNG')
+
+def custom_metric(y_test, y_pred):
+    metrics = compute_metrics(y_test, y_pred)
+    return -metrics["RMSE"]+metrics["pearsonr"]

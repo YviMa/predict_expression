@@ -1,0 +1,35 @@
+Running configs/gb_with_feature_selection_gene_1.yaml
+Traceback (most recent call last):
+  File "/home/users1/rkxv/s2673208/predict_expression/src/train.py", line 44, in <module>
+    model, best_params = Tuner.tune(X,y)
+                         ~~~~~~~~~~^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/src/tuning.py", line 32, in tune
+    grid.fit(X, y)
+    ~~~~~~~~^^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/sklearn/base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/sklearn/model_selection/_search.py", line 1053, in fit
+    self._run_search(evaluate_candidates)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/sklearn/model_selection/_search.py", line 1612, in _run_search
+    evaluate_candidates(ParameterGrid(self.param_grid))
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/sklearn/model_selection/_search.py", line 999, in evaluate_candidates
+    out = parallel(
+        delayed(_fit_and_score)(
+    ...<13 lines>...
+        )
+    )
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/sklearn/utils/parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/joblib/parallel.py", line 2072, in __call__
+    return output if self.return_generator else list(output)
+                                                ~~~~^^^^^^^^
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/joblib/parallel.py", line 1682, in _get_outputs
+    yield from self._retrieve()
+  File "/home/users1/rkxv/s2673208/predict_expression/.venv/lib64/python3.13/site-packages/joblib/parallel.py", line 1800, in _retrieve
+    time.sleep(0.01)
+    ~~~~~~~~~~^^^^^^
+KeyboardInterrupt
+pearsonr undefined: all test samples are equal

@@ -1,0 +1,63 @@
+data:
+  data_dir: data/raw
+  file_name: gene_2.txt
+  preprocessed_dir: data/preprocessed/gradient_boost
+evaluation:
+  n_splits: 5
+  plot: true
+  random_states:
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  test_size: 0.3
+experiment:
+  description: Gradient boosting with feature selection via elastic net.
+  name: gb_feature_selection_gene_2
+preprocessing:
+  feature_selection:
+    apply: true
+    estimator: elastic_net
+    params:
+      alpha: 0.2
+      l1_ratio: 0.1
+    selector: sklearn_model
+    tuning:
+      tune: false
+  save_preprocessed: true
+  x_scaling:
+  - params: {}
+    scaler: standard
+  y_scaling:
+  - params: {}
+    scaler: log2
+  - params: {}
+    scaler: standard
+training:
+  cv: 5
+  estimator: gradient_boost
+  param_grid:
+    learning_rate:
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
+    max_depth:
+    - 2
+    - 4
+    - 6
+    - 8
+    n_estimators:
+    - 200
+    - 400
+    - 500
+    subsample:
+    - 0.3
+    - 0.5
+    - 0.7
+    - 1.0
+  random_state: 42
+  scoring: neg_mean_squared_error
+  tune: true
+  tuner: gridsearch_cv

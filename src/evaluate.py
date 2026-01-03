@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 from utils import load_config, load_data, compute_metrics
 from scaling import apply_scaling
 from model_registry import create_model
+from feature_selection import get_feature_selector
+from utils import plot_training_results
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--config", required=False, help="Path to YAML config")
@@ -49,6 +51,12 @@ for n in range(config["evaluation"]["n_splits"]):
     y_train = y_train.ravel()
     y_test = y_test.ravel()
 
+    if config["preprocessing"]["feature_selection"]["apply"]==True:
+        feature_selector = get_feature_selector(X_train,y_train,config["preprocessing"]["feature_selection"])
+        X_train = feature_selector.fit_transform(X_train, y_train)
+        mask = feature_selector.get_support()
+        X_test = X_test[:, mask]
+
     model = create_model(config["training"]["estimator"], params=params)
 
     model.fit(X_train, y_train)
@@ -58,6 +66,10 @@ for n in range(config["evaluation"]["n_splits"]):
 
     col_name = "split " + str(n)
     metrics_df[col_name] = [metrics_dict["RMSE"], metrics_dict["pearsonr"]]
+
+    
+if config["evaluation"]["plot"]==True:
+    plot_training_results(y_test, y_pred, exp_dir)
 
 metrics_df.index = ["RMSE", "pearsonr"]
 metrics_df["mean"]=metrics_df.mean(axis=1)

@@ -1,0 +1,35 @@
+experiment: 
+  name: test_transformer
+  description: "Just for testing whether code refactor runs smoothly."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - scaler: standard
+      params: {}
+  y_scaling:
+    - scaler: log2
+      params: {}
+    - scaler: standard
+      params: {}
+  feature_selection:
+    apply: false 
+
+tuning:
+  tuner: tab_tuner
+  estimator: tabtransformer
+  tuning_config:
+    model:
+     task: "regression"
+    trainer:
+      batch_size: 128
+      max_epochs: 300
+
+evaluation:
+  plot: true
+  test_size: 0.3
+  n_splits: 5
+  random_states: [0, 1, 2, 3, 4]

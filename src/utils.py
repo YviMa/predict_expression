@@ -26,14 +26,14 @@ def set_up_experiment(config):
     return exp_dir
 
 def load_data(data_dir):
-    gene = pd.read_csv(data_dir, delimiter='\t', header=0)
-    X = gene.iloc[:,1:-1].to_numpy()
-    y = gene.iloc[:,-1].to_numpy()
+    gene = pd.read_csv(data_dir, delimiter='\t', header=0)  
+    X = gene.iloc[:,1:-1]
+    y = gene.iloc[:,-1]
     
-    return X, y
+    return X, pd.DataFrame(y)
 
 def compute_metrics(y_test, y_pred):
-    RMSE = mean_squared_error(y_test, y_pred)
+    RMSE = np.sqrt(mean_squared_error(y_test, y_pred))
 
     if len(np.unique(y_test))==1:
         print("pearsonr undefined: all test samples are equal")
@@ -66,16 +66,33 @@ def plot_training_results(y_test, y_pred, exp_dir):
     axs[1].scatter(np.arange(len(y_pred)), y_pred)
     axs[1].set_xlabel("sample index")
     axs[1].set_ylabel("expression value")
+    #axs[1].set_yscale("log")
 
     fig.savefig(os.path.join(exp_dir,"training_plots.png"), format='PNG')
+    plt.clf
 
-def plot_feature_importances(coefs, exp_dir):
-    plt.plot(np.sort(coefs))
-    plt.xlabel('coef index')
-    plt.ylabel('coef value')
+def plot_feature_importances(model, exp_dir):
+    
+    if hasattr(model, "coef_"):
+        importances = model.coef_
+    elif hasattr(model, "feature_importances_"):
+        importances = model.feature_importances_
+    else:
+        return None
+    
+    plt.plot(np.sort(importances))
+    plt.xlabel('featues index')
+    plt.ylabel('importance')
 
     plt.savefig(os.path.join(exp_dir,"feature_importance.png"), format='PNG')
+    plt.clf
 
 def custom_metric(y_test, y_pred):
     metrics = compute_metrics(y_test, y_pred)
     return -metrics["RMSE"]+metrics["pearsonr"]
+
+def log2p1(X):
+    return np.log2(np.asarray(X)+1)
+
+def exp2m1(X):
+    return 2**(np.asarray(X))-1

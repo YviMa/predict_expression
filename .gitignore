@@ -24,3 +24,8 @@ experiments/**/*.png
 
 # Logs
 *.log
+lightning_logs/
+.pt_tmp/
+
+# Models
+saved_models/

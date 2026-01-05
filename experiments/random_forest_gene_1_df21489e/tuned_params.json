@@ -1,5 +1,0 @@
-{
-  "criterion": "squared_error",
-  "max_features": 0.4,
-  "n_estimators": 500
-}

@@ -1,35 +1,88 @@
+import pandas as pd
 from sklearn.model_selection import GridSearchCV
+from pytorch_tabular import TabularModelTuner
+from model_registry import create_model
+from pytorch_tabular.models import TabTransformerConfig
+from pytorch_tabular.config import (
+    DataConfig,
+    OptimizerConfig,
+    TrainerConfig,
+)
 
 TUNING_REGISTRY = {}
 
-def get_tuner(name, params=None):
+def get_tuner(name, estimator, params=None):
     if name not in TUNING_REGISTRY:
         raise ValueError(f"Unknown tuner: {name}")
+    if params is None:
+        params = {}
+    params.update({"estimator": estimator})
     return TUNING_REGISTRY[name](**params)
 
-class BaseTuner:
-    def __init__(self, estimator, config):
-        self.estimator = estimator
-        self.config = config
 
-    def tune(self, X, y):
-        """Return best estimator or best parameters"""
-        raise NotImplementedError
+class TabularModelTunerWrapper:
 
-class SklearnGridTuner(BaseTuner):
-    def tune(self, X, y):
-        param_grid = self.config["param_grid"]
-        cv = self.config.get("cv_folds", 5)
-        scoring = self.config.get("scoring", None)
-        grid = GridSearchCV(
-            estimator=self.estimator,
-            param_grid=param_grid,
-            cv=cv,
-            scoring=scoring,
-            refit = True,
-            n_jobs=-1
+    def __init__(self, estimator, model, trainer, search_space, metric, mode, strategy, cv, verbose=True):
+
+        self.estimator_name = estimator_name
+        self.tuner = None
+        self.search_space = search_space
+        self.metric = metric
+        self.mode = mode
+        self.strategy = strategy
+        self.cv = cv
+        self.verbose = verbose
+
+
+        #target_range = [(-1 , 15)]
+        
+
+        self.trainer_config = TrainerConfig(
+            batch_size=trainer["batch_size"],
+            max_epochs=trainer["max_epochs"],
         )
-        grid.fit(X, y)
-        return grid.best_estimator_, grid.best_params_
+        self.optimizer_config = OptimizerConfig()
 
-TUNING_REGISTRY["gridsearch_cv"] = SklearnGridTuner
+        self.model_config = TabTransformerConfig(
+            task=model["task"],
+            #target_range=target_range,
+        )
+
+        self.data_config = None
+
+    def tune(self, X, y):
+        y = pd.DataFrame(y)
+        df = pd.DataFrame(X.copy())
+        df[y.columns[0]] = y
+        self.data_config = DataConfig(
+            target=[
+                y.columns[0]
+            ],  # target should always be a list
+            continuous_cols=list(X.columns),
+            categorical_cols=[],
+            normalize_continuous_features=False,
+        )
+
+        self.tuner = TabularModelTuner(
+            data_config=self.data_config,
+            model_config=self.model_config,
+            optimizer_config=self.optimizer_config,
+            trainer_config=self.trainer_config,
+            verbose=True
+            )
+
+        trials_df, best_params, best_score, best_model = self.tuner.tune(
+            train = df, 
+            search_space = self.search_space, 
+            metric = self.metric,
+            mode = self.mode,
+            strategy = self.strategy,
+            cv = self.cv,
+            verbose = True
+        )
+
+        return trials_df, best_params, best_score, best_model
+
+
+
+TUNING_REGISTRY["tab_tuner"]= TabularModelTunerWrapper

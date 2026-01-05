@@ -92,7 +92,41 @@ def custom_metric(y_test, y_pred):
     return -metrics["RMSE"]+metrics["pearsonr"]
 
 def log2p1(X):
-    return np.log2(np.asarray(X)+1)
+    if isinstance(X, pd.Series):
+        X_ = np.asarray(X)
+        X_ = np.log2(X_+1)
+        logged = pd.Series(X_, name=X.name, index=X.index)
+    elif isinstance(X, np.ndarray):
+        X_ = X
+        logged = np.log2(X_+1)
+    else:
+        raise TypeError("Wrong data type, must be pd.Series or numpy array.")
+    return logged
 
 def exp2m1(X):
-    return 2**(np.asarray(X))-1
+    if isinstance(X, pd.Series):
+        X_ = np.asarray(X)
+        X_ = np.exp2(X_)-1
+        expd = pd.Series(X_, name=X.name, index=X.index)
+    elif isinstance(X, np.ndarray):
+        X_ = X
+        expd = np.exp2(X_)-1
+    else:
+        raise TypeError("Wrong data type, must be pd.Series or numpy array.")
+    return expd
+
+def split_params(params_grid):
+    model_params = {}
+    trainer_params = {}
+    optimizer_params = {}
+
+    for key in params_grid.keys():
+        subkeys = key.split("__")
+        if subkeys[0] == "model_params":
+            model_params.update({subkeys[1]: params_grid[key]})
+        if subkeys[0] == "trainer_params":
+            trainer_params.update({subkeys[1]: params_grid[key]})
+        if subkeys[0] == "optimizer_params":
+            optimizer_params.update({subkeys[1]: params_grid[key]})
+    
+    return model_params, trainer_params, optimizer_params

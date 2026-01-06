@@ -14,24 +14,23 @@ preprocessing:
     - standard
   x_scaler_params: {}
   y_scaler_params: {}
-  feature_selection:
-    apply: false 
+feature_selection:
+  apply: false 
 
 estimator:
   name: elastic_net
-  est_params: {}
+  est_params: {'max_iter': 10000, 'tol': 0.01}
 
 tuning:
   tune: true
   tuner: gridsearch_cv
   tuning_config:
     param_grid: {
-    'regressor__regressor__alpha': [0.001, 0.01, 0.1, 0.2, 0.3],
-    'regressor__regressor__l1_ratio': [0.1, 0.5, 0.7, 0.8, 0.9],
-    'regressor__regressor__max_iter': [10000],
-    'regressor__regressor__tol': [0.01]}
-    cv: 3
+    'regressor__regressor__alpha': [0.01, 0.1, 0.2, 0.3, 0.5, 0.7],
+    'regressor__regressor__l1_ratio': [0.1, 0.5, 0.7, 0.8, 0.9]}
+    cv: 5
     scoring: "neg_mean_squared_error"
+
 
 evaluation:
   plot: true

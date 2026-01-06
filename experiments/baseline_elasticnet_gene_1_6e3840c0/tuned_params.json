@@ -1,6 +1,0 @@
-{
-  "regressor__regressor__alpha": 0.01,
-  "regressor__regressor__l1_ratio": 0.9,
-  "regressor__regressor__max_iter": 10000,
-  "regressor__regressor__tol": 0.01
-}

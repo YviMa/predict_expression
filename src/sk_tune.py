@@ -33,6 +33,8 @@ exp_dir = set_up_experiment(config)
 data_path = join(config['data']['data_dir'], config['data']['file_name'])
 X, y = load_data(data_path)
 
+y = y.values.ravel()
+
 x_scalers = config['preprocessing']['x_scaling']
 y_scalers = config['preprocessing']['y_scaling']
 x_scaler_params = config['preprocessing']['x_scaler_params']
@@ -67,19 +69,19 @@ tuning_config = config["tuning"]["tuning_config"]
 
 results = []
 for idx, (train_index, test_index) in enumerate(kf.split(X)):
-
-    X_train, y_train = X.iloc[train_index,:], y.iloc[train_index,:]
-    X_test, y_test = X.iloc[test_index,:], y.iloc[test_index,:]
+    print("currently running split nr. ", idx)
+    X_train, y_train = X.iloc[train_index,:], y[train_index]
+    X_test, y_test = X.iloc[test_index,:], y[test_index]
 
     grid = GridSearchCV(model, **tuning_config)
     grid.fit(X_train, y_train)
 
     best_params = grid.best_params_
     y_pred = grid.predict(X_test)
-    y_test_raw = y_test.values.ravel()
+    #y_test_raw = y_test.values.ravel()
 
-    rmse = root_mean_squared_error(y_test_raw, y_pred)
-    r_val, _ = pearsonr(y_test_raw, y_pred.ravel())
+    rmse = root_mean_squared_error(y_test, y_pred)
+    r_val, _ = pearsonr(y_test, y_pred.ravel())
 
     new_row = {"best_combo": str(best_params), "RMSE":rmse, "pearsonr": r_val}
     results.append(new_row)

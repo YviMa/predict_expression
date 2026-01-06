@@ -2,7 +2,9 @@ data:
   data_dir: data/raw
   file_name: gene_1.txt
 estimator:
-  est_params: {}
+  est_params:
+    max_iter: 10000
+    tol: 0.01
   name: elastic_net
 evaluation:
   estimator: elastic_net
@@ -12,23 +14,22 @@ evaluation:
   random_state: 7
   test_size: 0.3
 experiment:
-  description: Controlled experiment using elastic net for establishing minimum performance.
-  name: baseline_elasticnet_gene_1
+  description: Elasticnet without log transform to check whether it helps.
+  name: elasticnet_no_log_gene_1
+feature_selection:
+  apply: false
 preprocessing:
-  feature_selection:
-    apply: false
   x_scaler_params: {}
   x_scaling:
   - standard
   y_scaler_params: {}
   y_scaling:
-  - log2
   - standard
 tuning:
   tune: true
   tuner: gridsearch_cv
   tuning_config:
-    cv: 3
+    cv: 5
     param_grid:
       regressor__regressor__alpha:
       - 0.001
@@ -42,8 +43,4 @@ tuning:
       - 0.7
       - 0.8
       - 0.9
-      regressor__regressor__max_iter:
-      - 10000
-      regressor__regressor__tol:
-      - 0.01
     scoring: neg_mean_squared_error

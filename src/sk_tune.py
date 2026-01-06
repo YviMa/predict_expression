@@ -1,5 +1,6 @@
 import argparse
 import json
+import joblib
 import pandas as pd
 from scaling import build_scaler
 from os.path import join
@@ -107,6 +108,12 @@ total_accuracy.to_csv(join(exp_dir, "nested_cross_val_accuracy.csv"), sep='\t')
 grid = GridSearchCV(model, **tuning_config)
 grid.fit(X, y)
 overall_best_params = grid.best_params_
+overall_best_model = grid.best_estimator_
 
 with open(join(exp_dir,"tuned_params.json"), "w") as f:
     json.dump(overall_best_params, f, indent=2)
+
+
+# saving the model
+model_filename = join(exp_dir, "model.joblib")
+joblib.dump(overall_best_model, model_filename)

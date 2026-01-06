@@ -1,0 +1,6 @@
+{
+  "regressor__regressor__C": 1.0,
+  "regressor__regressor__epsilon": 1.0,
+  "regressor__regressor__gamma": "scale",
+  "regressor__regressor__kernel": "rbf"
+}

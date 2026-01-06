@@ -1,9 +1,9 @@
 experiment: 
-  name: baseline_elasticnet_gene_2
-  description: "Controlled experiment using elastic net for establishing minimum performance."
+  name: svr_gene_1
+  description: "Support vector regression."
 
 data: 
-  file_name: gene_2.txt
+  file_name: gene_1.txt
   data_dir: data/raw
 
 preprocessing:
@@ -18,16 +18,18 @@ feature_selection:
   apply: false 
 
 estimator:
-  name: elastic_net
-  est_params: {'max_iter': 10000, 'tol': 0.01}
+  name: support_vector
+  est_params: {'degree': 2}
 
 tuning:
   tune: true
   tuner: gridsearch_cv
   tuning_config:
-    param_grid: {
-    'regressor__regressor__alpha': [0.01, 0.1, 0.2, 0.3, 0.5, 0.7],
-    'regressor__regressor__l1_ratio': [0.1, 0.5, 0.7, 0.8, 0.9]}
+    param_grid: {'regressor__regressor__kernel': ["poly", "rbf", "sigmoid"],
+    'regressor__regressor__gamma': ["scale", 0.002, 0.01],
+    'regressor__regressor__C': [0.005, 0.01, 0.1, 0.5, 1.0],
+    'regressor__regressor__epsilon': [0.1, 0.5, 1.0, 10, 100]
+    }
     cv: 5
     scoring: "neg_mean_squared_error"
 

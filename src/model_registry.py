@@ -61,15 +61,3 @@ class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):
         return (y > 0).astype(int)
 
 MODEL_REGISTRY["hierarchical"] = ClassifierGuidedRegressor
-
-class SelectWithPCA(BaseEstimator):
-    def __init__(self, n_components = None):
-        super().__init__()
-        self.n_components = n_components
-    def fit(self, X, y = None):
-        self.pca_ = PCA(n_components=self.n_components)
-        self.pca_.fit(X)
-        self.feature_importances_ = np.abs(self.pca_.components_).sum(axis=0)
-        return self
-
-MODEL_REGISTRY["pca_selector"] = SelectWithPCA # to use with scikitlearn's SelectFromModel, NOT to be used independently

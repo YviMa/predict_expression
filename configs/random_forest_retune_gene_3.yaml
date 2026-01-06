@@ -1,9 +1,9 @@
 experiment: 
-  name: baseline_elasticnet_gene_2
-  description: "Controlled experiment using elastic net for establishing minimum performance."
+  name: random_forest_retune_gene_3
+  description: "Try a different set of parameters because the last experiment reached end of grid."
 
 data: 
-  file_name: gene_2.txt
+  file_name: gene_3.txt
   data_dir: data/raw
 
 preprocessing:
@@ -18,16 +18,16 @@ feature_selection:
   apply: false 
 
 estimator:
-  name: elastic_net
-  est_params: {'max_iter': 10000, 'tol': 0.01}
+  name: random_forest
+  est_params: {}
 
 tuning:
   tune: true
   tuner: gridsearch_cv
   tuning_config:
-    param_grid: {
-    'regressor__regressor__alpha': [0.01, 0.1, 0.2, 0.3, 0.5, 0.7],
-    'regressor__regressor__l1_ratio': [0.1, 0.5, 0.7, 0.8, 0.9]}
+    param_grid: {"regressor__regressor__max_features": [300, 400], 
+    "regressor__regressor__n_estimators": [500], 
+    "regressor__regressor__max_depth": [15, 20]}
     cv: 5
     scoring: "neg_mean_squared_error"
 

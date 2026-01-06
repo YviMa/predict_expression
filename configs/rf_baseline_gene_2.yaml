@@ -1,5 +1,5 @@
 experiment:
-  name: rf_baseline_gene_1
+  name: rf_baseline_gene_2
   description: "Random Forest baseline without feature selection."
 
 data:

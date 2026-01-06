@@ -1,0 +1,42 @@
+experiment:
+  name: rf_baseline_gene_1
+  description: "Random Forest baseline without feature selection."
+
+data:
+  file_name: gene_1.txt
+  data_dir: data/raw
+  preprocessed_dir: data/preprocessed/rf_baseline_gene_1
+
+preprocessing:
+  save_preprocessed: true
+  x_scaling:
+    - scaler: standard
+      params: {}
+  y_scaling:
+    - scaler: log2
+      params: {}
+    - scaler: standard
+      params: {}
+  feature_selection:
+    apply: false
+
+training:
+  estimator: random_forest
+  tune: true
+  tuner: gridsearch_cv
+  param_grid:
+    n_estimators: [300, 500]
+    max_depth: [null, 20]
+    min_samples_leaf: [1, 5]
+    max_features: ["sqrt", 0.33]
+    criterion: ["squared_error"]
+  cv: 5
+  scoring: "neg_mean_squared_error"
+  random_state: 42
+  test_size: 0.3
+  plot: true
+
+evaluation:
+  test_size: 0.3
+  n_splits: 5
+  random_states: [0, 1, 2, 3, 4]

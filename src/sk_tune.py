@@ -1,23 +1,17 @@
 import argparse
-import matplotlib.pyplot as plt
 import json
-import ast
 import pandas as pd
 from scaling import build_scaler
 from os.path import join
 from sklearn.model_selection import KFold
-from utils import load_config, set_up_experiment, load_data, log2p1, exp2m1
+from utils import load_config, set_up_experiment, load_data
 from model_registry import create_model
 from sklearn.compose import TransformedTargetRegressor
-from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from scipy.stats import pearsonr
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import GridSearchCV
 from feature_selection import get_feature_selector
-from sklearn import set_config
-
-#set_config(transform_output = "pandas")
 
 # parse the yaml file 
 parser = argparse.ArgumentParser()
@@ -30,11 +24,13 @@ config = load_config(args.config)
 # creates separate directory for each experiment
 exp_dir = set_up_experiment(config)
 
+# load data
 data_path = join(config['data']['data_dir'], config['data']['file_name'])
 X, y = load_data(data_path)
 
 y = y.values.ravel()
 
+# initialize scaler
 x_scalers = config['preprocessing']['x_scaling']
 y_scalers = config['preprocessing']['y_scaling']
 x_scaler_params = config['preprocessing']['x_scaler_params']
@@ -43,14 +39,19 @@ y_scaler_params = config['preprocessing']['y_scaler_params']
 X_scaler = build_scaler(x_scalers, x_scaler_params)
 Y_scaler = build_scaler(y_scalers, y_scaler_params)
 
+# initialize estimator
 est_name = config["estimator"]["name"]
 est_params = config["estimator"]['est_params']
 estimator = create_model(est_name, est_params)
 
-
+# build pipeline
 steps = [('scaler', X_scaler)]
 if config["feature_selection"]["apply"] == True:
-    selector = get_feature_selector(config["feature_selection"]["selector"], config["feature_selection"]["selector_config"])
+    # initialize feature_selector
+    selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) # FIXED params for the estimator
+    selector_name = config["feature_selection"]["selector_name"]
+    selector_params = config["feature_selection"]["selector_params"]
+    selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) # params for the selector e.g. importance_getter
     steps.append(('selector', selector))
 
 steps.append(('regressor', estimator))
@@ -61,13 +62,18 @@ model = TransformedTargetRegressor(
     regressor=pipe,
     transformer=Y_scaler
 )
+'''
+--- NESTED CROSS VALIDATION----------------
 
+This part is not for tuning final hyperparameters but for evaluation/estimation of the generalization error.
+'''
+# initialize outer cross-validation folds
 kf = KFold(n_splits=7, shuffle = True, random_state =42)
 
-#tuner_name = config["tuning"]["tuner"]
 tuning_config = config["tuning"]["tuning_config"]
 
 results = []
+# iterating over the outer folds
 for idx, (train_index, test_index) in enumerate(kf.split(X)):
     print("currently running split nr. ", idx)
     X_train, y_train = X.iloc[train_index,:], y[train_index]
@@ -78,7 +84,6 @@ for idx, (train_index, test_index) in enumerate(kf.split(X)):
 
     best_params = grid.best_params_
     y_pred = grid.predict(X_test)
-    #y_test_raw = y_test.values.ravel()
 
     rmse = root_mean_squared_error(y_test, y_pred)
     r_val, _ = pearsonr(y_test, y_pred.ravel())
@@ -95,7 +100,10 @@ std = df[["RMSE", "pearsonr"]].std()
 total_accuracy = pd.DataFrame({"mean": mean, "std": std})
 total_accuracy.to_csv(join(exp_dir, "nested_cross_val_accuracy.csv"), sep='\t')
 
-# final tuning of hyperparameters
+'''
+--- FINAL TUNING OF HYPERPARAMETERS ON ALL DATA------------------------------
+'''
+
 grid = GridSearchCV(model, **tuning_config)
 grid.fit(X, y)
 overall_best_params = grid.best_params_

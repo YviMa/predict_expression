@@ -21,11 +21,15 @@ experiments/**/*.png
 
 # Bash automation
 *.sh
+!example.sh
 
 # Logs
 *.log
 lightning_logs/
 .pt_tmp/
+logs/
+nohup.out
+output.log
 
 # Models
 saved_models/

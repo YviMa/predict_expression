@@ -1,0 +1,47 @@
+experiment: 
+  name: test_sklearn # the folder name that your results will be saved in
+  description: "Example file to see config file structure." # describe briefly what you did/why you did it
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  # for available scalers, see the registry at the top of scaling.py
+  # I would recommend sticking with these options though
+  x_scaling: 
+    - standard # list scalers in the order that you want to use them in
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: true # don't forget to set this
+  # with this name you can use any scikit-learn model with a coef_ or feature_importances_ attribute
+  # for feature selection (based on SelectFromModel class from scikit-learn)
+  selector_name: scikitlearn_estimator 
+  # fixed params that only go into the feature selector, e.g. "importance_getter" for an instance of SelectFromModel
+  selector_params: {}
+  # fixed params that go into the estimator that you want SelectFromModel to use
+  estimator_config: 
+    name: elastic_net # just like in model_registry.py
+    params: {"max_iter": 1000, "tol": 0.01}
+
+# actual estimator used for regression NOT for feature selection
+estimator:
+  name: random_forest
+  est_params: {} # fixed params
+
+# hyperparameter tuning configuration
+tuning:
+  tuning_config:
+  # make sure that the parameters that you want to tune for the model selection estimator are prefixed by "regressor__selector__estimator__"
+  # and the ones for the actual regressor by "regressor_regressor__"
+    param_grid: {
+    'regressor__selector__estimator__alpha': [0.1, 0.2], 
+    'regressor__selector__estimator__l1_ratio': [0.1],
+    'regressor__regressor__n_estimators': [10, 20]}
+    cv: 5 # I would strongly recommend to NOT modify this for comparability
+    scoring: "neg_mean_squared_error" # this also

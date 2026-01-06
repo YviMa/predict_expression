@@ -1,40 +1,41 @@
 experiment: 
   name: random_forest_gene_1
-  description: "Random forest as ensemble method with less overfitting/more stability."
+  description: "Random Forest without feature selection."
 
 data: 
   file_name: gene_1.txt
   data_dir: data/raw
-  preprocessed_dir: data/preprocessed/random_forest
 
 preprocessing:
-  save_preprocessed: true
   x_scaling: 
-    - scaler: standard
-      params: {}
+    - standard
   y_scaling:
-    - scaler: log2
-      params: {}
-    - scaler: standard
-      params: {}
-  feature_selection:
-    apply: false 
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
 
-training:
-  estimator: random_forest
+estimator:
+  name: random_forest
+  est_params: {}
+
+tuning:
   tune: true
-  plot: true
   tuner: gridsearch_cv
-  param_grid: {"n_estimators": [500], 
-  "criterion": ["squared_error", "absolute_error"],
-  "max_features": ["sqrt", 0.33, 0.25, 0.4]
-  }
-  cv: 5
-  scoring: "neg_mean_squared_error"
-  random_state: 42
-  test_size: 0.3
+  tuning_config:
+    param_grid: {"regressor__regressor__max_features": [100, 200, 300], 
+    "regressor__regressor__n_estimators": [500], 
+    "regressor__regressor__max_depth": [4, 15, 20]}
+    cv: 5
+    scoring: "neg_mean_squared_error"
+
 
 evaluation:
+  plot: true
   test_size: 0.3
   n_splits: 5
-  random_states: [0, 1, 2, 3, 4]
+  random_state: 7
+  estimator: elastic_net
+  eval_config: {}

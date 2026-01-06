@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.linear_model import ElasticNet
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.svm import SVR
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from pytorch_tabular import TabularModel
 from pytorch_tabular.models import TabTransformerConfig
@@ -15,7 +16,8 @@ from pytorch_tabular.config import (
 MODEL_REGISTRY = {
     "elastic_net": ElasticNet,
     "gradient_boost": GradientBoostingRegressor,
-    "random_forest": RandomForestRegressor
+    "random_forest": RandomForestRegressor,
+    "support_vector": SVR
 }
 
 def create_model(name, params=None):

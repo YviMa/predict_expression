@@ -1,0 +1,5 @@
+{
+  "regressor__regressor__max_depth": 15,
+  "regressor__regressor__max_features": 300,
+  "regressor__regressor__n_estimators": 500
+}

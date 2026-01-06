@@ -1,9 +1,9 @@
 experiment: 
-  name: random_forest_gene_3
-  description: "Random forest without feature selection."
+  name: random_forest_retune_gene_1
+  description: "Try a different set of parameters because the last experiment reached end of grid."
 
 data: 
-  file_name: gene_3.txt
+  file_name: gene_1.txt
   data_dir: data/raw
 
 preprocessing:
@@ -25,11 +25,12 @@ tuning:
   tune: true
   tuner: gridsearch_cv
   tuning_config:
-    param_grid: {"regressor__regressor__max_features": [100, 200, 300], 
+    param_grid: {"regressor__regressor__max_features": [100, 200], 
     "regressor__regressor__n_estimators": [500], 
-    "regressor__regressor__max_depth": [4, 15, 20]}
-    cv: 3
+    "regressor__regressor__max_depth": [20, 30]}
+    cv: 5
     scoring: "neg_mean_squared_error"
+
 
 evaluation:
   plot: true

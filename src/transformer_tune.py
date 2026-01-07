@@ -237,7 +237,7 @@ for combo in param_combinations:
     combo_rmses.append(new_row)
 
 overall_best_params_with_rmse = min(combo_rmses, key=lambda x: x['RMSE'])
-overall_best_params = best_params_with_rmse.copy()
+overall_best_params = overall_best_params_with_rmse.copy()
 del overall_best_params['RMSE']
 
 with open(join(exp_dir,"tuned_params.json"), "w") as f:

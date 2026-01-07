@@ -30,6 +30,7 @@ lightning_logs/
 logs/
 nohup.out
 output.log
+rmm_log.txt
 
 # Models
 saved_models/

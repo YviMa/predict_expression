@@ -1,22 +1,28 @@
 import cudf
 import cupy as cp
-from cuml.linear_model import ElasticNet, Lars, LassoLars
-from cuml.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor
+from cuml.linear_model import ElasticNet
+from sklearn.linear_model import Lars, LassoLars
+from cuml.ensemble import RandomForestRegressor
+from scipy.sparse import diags
+import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor, AdaBoostRegressor
+import xgboost as xgb
 from cuml.svm import SVR
 from cuml.decomposition import PCA
-from cuml.cluster import FeatureAgglomeration
-from cuml.base import BaseEstimator, RegressorMixin, clone
-from pytorch_tabular import TabularModel
-from pytorch_tabular.models import TabTransformerConfig
-from pytorch_tabular.config import (
-    DataConfig,
-    OptimizerConfig,
-    TrainerConfig,
-)
+from sklearn.cluster import FeatureAgglomeration
+from cuml.cluster import AgglomerativeClustering
+from sklearn.base import BaseEstimator, RegressorMixin, clone
+#from pytorch_tabular import TabularModel
+#from pytorch_tabular.models import TabTransformerConfig
+#from pytorch_tabular.config import (
+    #DataConfig,
+    #OptimizerConfig,
+    #TrainerConfig,
+#)
 
 MODEL_REGISTRY = {
     "elastic_net": ElasticNet,
-    "gradient_boost": GradientBoostingRegressor,
+    "xg_boost": xgb.XGBRegressor,
     "random_forest": RandomForestRegressor,
     "support_vector": SVR
 }
@@ -64,14 +70,22 @@ class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):
 MODEL_REGISTRY["hierarchical"] = ClassifierGuidedRegressor
 
 class CustomFeatureAgg(FeatureAgglomeration):
-    def __init__(self, n_clusters = 2, *, metric = "euclidean", memory = None, connectivity = None, compute_full_tree = "auto", linkage = "ward", pooling_func = cp.mean, distance_threshold = None, compute_distances = False):
-        super().__init__(n_clusters, metric=metric, memory=memory, connectivity=connectivity, compute_full_tree=compute_full_tree, linkage=linkage, pooling_func=pooling_func, distance_threshold=distance_threshold, compute_distances=compute_distances)
+    def __init__(self, *, n_clusters=2, metric="euclidean", connectivity=None, linkage="ward"):
+        
+        super().__init__(
+            n_clusters=n_clusters, 
+            metric=metric, 
+            connectivity=connectivity,
+            linkage=linkage
+        )
 
-    def fit(self, X, y=None):
-        N = X.shape[1]
-        conn = cp.tri(N)
-        conn[cp.diag_indices(N)]=0
-        self.connectivity=conn
-        return super().fit(X,y)
+    def fit(self, X, y=None): 
+        if self.connectivity is None:
+            N = X.shape[1]
+            diag_1 = np.ones(N)
+            diag_2 = np.ones(N-1)
+            conn = diags([diag_2, diag_1, diag_2], offsets=[-1,0,1])
+            self.connectivity = conn   
+        return super().fit(X, y)
 
 MODEL_REGISTRY["feature_agg"] = CustomFeatureAgg

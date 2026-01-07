@@ -1,5 +1,5 @@
-from cuml.feature_selection import SelectFromModel, VarianceThreshold
-from cuml.base  import BaseEstimator, TransformerMixin
+from sklearn.feature_selection import SelectFromModel, VarianceThreshold
+from sklearn.base  import BaseEstimator, TransformerMixin
 
 
 FEATURE_SELECTION_REGISTRY = {

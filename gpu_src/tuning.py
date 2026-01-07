@@ -1,3 +1,4 @@
+import torch
 import cudf as pd
 from cuml.model_selection import GridSearchCV
 from pytorch_tabular import TabularModelTuner

@@ -1,7 +1,7 @@
 from utils import log2p1, exp2m1
 from cuml.preprocessing import StandardScaler
-from cuml.pipeline import Pipeline
-from cuml.preprocessing import StandardScaler, FunctionTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
 
 SCALER_REGISTRY = {
     "standard": StandardScaler

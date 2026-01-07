@@ -1,0 +1,59 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    max_iter: 10000
+    tol: 0.01
+  name: elastic_net
+evaluation:
+  estimator: elastic_net
+  eval_config: {}
+  n_splits: 5
+  plot: true
+  random_state: 7
+  test_size: 0.3
+experiment:
+  description: Elasticnet with feature agglomeration as feature extraction method
+    with ward algorithm.
+  name: elasticnet_agg_gene_1
+feature_selection:
+  apply: true
+  estimator_config:
+    name: feature_agg
+    params: {}
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 5
+    param_grid:
+      model_config__alpha:
+      - 0.001
+      - 0.01
+      - 0.1
+      - 0.2
+      - 0.3
+      model_config_l1_ratio:
+      - 0.01
+      - 0.1
+      - 0.5
+      - 0.7
+      - 0.8
+      - 0.9
+      selector_estimator_config__n_clusters:
+      - 100
+      - 200
+      - 500
+      - 1000
+    scoring: neg_mean_squared_error

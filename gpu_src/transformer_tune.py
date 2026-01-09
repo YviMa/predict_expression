@@ -1,21 +1,25 @@
 import argparse
-import matplotlib.pyplot as plt
 import json
 import ast
 import itertools
+import os
+import gc
+from os.path import join
+import joblib
 import cupy as cp
 import cudf as pd
 from scaling import build_scaler
-from os.path import join
-from cuml.model_selection import KFold
-from utils import load_config, set_up_experiment, load_data, log2p1, exp2m1, split_params
+from sklearn.model_selection import KFold
+from utils import load_config, set_up_experiment, load_data, log2p1, exp2m1, split_params, split_sk_params
 from model_registry import create_model
-from cuml.compose import TransformedTargetRegressor
-from cuml.preprocessing import StandardScaler
-from cuml.pipeline import Pipeline
-from cupyx.stats import pearsonr
-from cuml.metrics import root_mean_squared_error
-from cuml.model_selection import GridSearchCV
+from sklearn.model_selection import KFold
+from sklearn.compose import TransformedTargetRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn import set_config
+from feature_selection import get_feature_selector
+from sklearn.metrics import root_mean_squared_error
+from scipy.stats import pearsonr
 from pytorch_tabular.models import TabTransformerConfig
 from pytorch_tabular.config import (
     DataConfig,
@@ -24,6 +28,7 @@ from pytorch_tabular.config import (
 )
 from pytorch_tabular import TabularModel
 
+set_config(transform_output="pandas")
 
 # parse the yaml file 
 parser = argparse.ArgumentParser()
@@ -38,7 +43,6 @@ exp_dir = set_up_experiment(config)
 
 data_path = join(config['data']['data_dir'], config['data']['file_name'])
 data = pd.read_csv(data_path, sep='\t')
-num_col_names = list(data.columns[1:-1])
 cat_col_names = []
 target_col = ["Expression"]
 
@@ -55,8 +59,8 @@ param_grid = config["tuning"]["param_grid"]
 results = []
 for (outer_train_index, outer_test_index) in outer_kf.split(data):
 
-    train_data = data.iloc[outer_train_index,:]
-    test_data = data.iloc[outer_test_index,:]
+    train_data = data.iloc[outer_train_index,:].copy()
+    test_data = data.iloc[outer_test_index,:].copy()
 
     keys, values = zip(*param_grid.items())
     param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
@@ -65,16 +69,35 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
     for combo in param_combinations:
         rmses = []
         for (inner_train_index, inner_test_index) in inner_kf.split(train_data):
+            model_params, selector_params, selector_estimator_params = split_sk_params(combo)
 
-            tune_data  = train_data.iloc[inner_train_index, :]
-            val_data = train_data.iloc[inner_train_index, :]
+            tune_data  = train_data.iloc[inner_train_index, :].copy()
+            val_data = train_data.iloc[inner_test_index, :].copy()
 
             # by default, pytorch_tabular's models perform standard scaling so only log scale here
             if config["preprocessing"]["y_scaling"] == "log2":
-                logged = log2p1(tune_data["Expression"])
-                tune_data["Expression"] = logged
+                tune_data["Expression"] = log2p1(tune_data["Expression"])
+            
+            # standard scaling both x and y
+            x_scaler =  StandardScaler()
+            y_scaler = StandardScaler()
+            tune_data.iloc[:,1:-1] = x_scaler.fit_transform(tune_data.iloc[:,1:-1])
+            tune_data["Expression"] = y_scaler.fit_transform(tune_data["Expression"])
 
-            tune_model_params, tune_trainer_params, tune_optimizer_params = split_params(combo)
+            val_data.iloc[:,1:-1] = x_scaler.transform(val_data.iloc[:,1:-1])
+            val_data["Expression"] = y_scaler.transform(val_data["Expression"])
+
+            if config["feature_selection"]["apply"] == True:
+                selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
+                selector_estimator.set_params(**selector_estimator_params)
+                selector_name = config["feature_selection"]["selector_name"]
+                selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
+                tune_data.iloc[:,-1:1] = selector.fit_transform(tune_data.iloc[:,-1:1])
+                val_data.iloc[:,-1:1] = selector.transform(val_data.iloc[:,-1:1])
+
+            num_col_names = list(tune_data.columns[1:-1])
+
+            tune_model_params, tune_trainer_params, tune_optimizer_params = split_params(model_params)
 
             model_params = {**fixed_model_params, **tune_model_params}
             trainer_params = {**fixed_trainer_params, **tune_trainer_params}
@@ -84,7 +107,8 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
                 target=target_col,
                 continuous_cols=num_col_names,
                 categorical_cols=cat_col_names,
-                num_workers=0
+                num_workers=0,
+                normalize_continuous_features = False,
             )
             trainer_config = TrainerConfig(**trainer_params, 
                                            trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
@@ -104,16 +128,22 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
             
             pred_df = estimator.predict(val_data)
 
+            pred_df["Expression_prediction"] = y_scaler.inverse_transform(pred_df["Expression_prediction"])
+            val_data["Expression"] = y_scaler.inverse_transform(val_data["Expression"])
+
             # scale back to original scale for validation
             if config["preprocessing"]["y_scaling"] == "log2":
-                expd = exp2m1(pred_df["Expression_prediction"])
-                pred_df["Expression_prediction"] = expd
+                pred_df["Expression_prediction"] = exp2m1(pred_df["Expression_prediction"])
             
             y_pred_raw=pred_df["Expression_prediction"].values.ravel()
             y_test_raw=val_data["Expression"].values.ravel()
 
             rmse = root_mean_squared_error(y_test_raw, y_pred_raw)
             rmses.append(rmse)
+
+            del estimator, pred_df
+            gc.collect()
+            cp.get_default_memory_pool().free_all_blocks()
         
         mean_rmse = cp.array(rmses).mean()
         new_row = {**combo, **{"RMSE": mean_rmse}}
@@ -123,7 +153,8 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
     best_params = best_params_with_rmse.copy()
     del best_params['RMSE']
 
-    best_model_params, best_trainer_params, best_optimizer_params = split_params(best_params)
+    model_params, selector_params, selector_estimator_params = split_sk_params(best_params)
+    best_model_params, best_trainer_params, best_optimizer_params = split_params(model_params)
 
     model_params = {**fixed_model_params, **best_model_params}
     trainer_params = {**fixed_trainer_params, **best_trainer_params}
@@ -133,6 +164,8 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
         target=target_col,
         continuous_cols=num_col_names,
         categorical_cols=cat_col_names,
+        normalize_continuous_features = False,
+        num_workers = 0,
     )
 
     trainer_config = TrainerConfig(**trainer_params, trainer_kwargs = {"enable_progress_bar": False})
@@ -147,15 +180,35 @@ for (outer_train_index, outer_test_index) in outer_kf.split(data):
     )
 
     if config["preprocessing"]["y_scaling"] == "log2":
-        logged = log2p1(train_data["Expression"])
-        train_data["Expression"] = logged
+        train_data["Expression"] = log2p1(train_data["Expression"])
+    
+    # standard scaling both x and y
+    x_scaler =  StandardScaler()
+    y_scaler = StandardScaler()
+    train_data.iloc[:,1:-1] = x_scaler.fit_transform(train_data.iloc[:,1:-1])
+    train_data["Expression"] = y_scaler.fit_transform(train_data["Expression"])
+
+    test_data.iloc[:,1:-1] = x_scaler.transform(test_data.iloc[:,1:-1])
+    test_data["Expression"] = y_scaler.transform(test_data["Expression"])
+
+    if config["feature_selection"]["apply"] == True:
+        selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
+        selector_estimator.set_params(**selector_estimator_params)
+        selector_name = config["feature_selection"]["selector_name"]
+        selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
+        train_data.iloc[:,-1:1] = selector.fit_transform(train_data.iloc[:,-1:1])
+        test_data.iloc[:,-1:1] = selector.transform(test_data.iloc[:,-1:1])
+
+    num_col_names = list(train_data.columns[1:-1])
 
     best_estimator.fit(train =train_data)
     pred_df = best_estimator.predict(test_data)
 
+    pred_df["Expression_prediction"] = y_scaler.inverse_transform(pred_df["Expression_prediction"])
+    test_data["Expression"] = y_scaler.inverse_transform(test_data["Expression"])
+
     if config["preprocessing"]["y_scaling"] == "log2":
-        expd = exp2m1(pred_df["Expression_prediction"])
-        pred_df["Expression_prediction"] = expd
+        pred_df["Expression_prediction"] = exp2m1(pred_df["Expression_prediction"])
             
     y_pred_raw=pred_df["Expression_prediction"].values.ravel()
     y_test_raw=test_data["Expression"].values.ravel()
@@ -183,16 +236,35 @@ combo_rmses = []
 for combo in param_combinations:
     rmses = []
     for (train_index, test_index) in kf.split(data):
+        model_params, selector_params, selector_estimator_params = split_sk_params(combo)
 
-        tune_data  = data.iloc[train_index, :]
-        val_data = data.iloc[train_index, :]
+        tune_data  = data.iloc[train_index, :].copy()
+        val_data = data.iloc[test_index, :].copy()
 
         # by default, pytorch_tabular's models perform standard scaling so only log scale here
         if config["preprocessing"]["y_scaling"] == "log2":
-            logged = log2p1(tune_data["Expression"])
-            tune_data["Expression"] = logged
+            tune_data["Expression"] = log2p1(tune_data["Expression"])
 
-        tune_model_params, tune_trainer_params, tune_optimizer_params = split_params(combo)
+        # standard scaling both x and y
+        x_scaler =  StandardScaler()
+        y_scaler = StandardScaler()
+        tune_data.iloc[:,1:-1] = x_scaler.fit_transform(tune_data.iloc[:,1:-1])
+        tune_data["Expression"] = y_scaler.fit_transform(tune_data["Expression"])
+
+        val_data.iloc[:,1:-1] = x_scaler.transform(val_data.iloc[:,1:-1])
+        val_data["Expression"] = y_scaler.transform(val_data["Expression"])
+
+        if config["feature_selection"]["apply"] == True:
+            selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
+            selector_estimator.set_params(**selector_estimator_params)
+            selector_name = config["feature_selection"]["selector_name"]
+            selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
+            tune_data.iloc[:,-1:1] = selector.fit_transform(tune_data.iloc[:,-1:1])
+            val_data.iloc[:,-1:1] = selector.transform(val_data.iloc[:,-1:1])
+
+        num_col_names = list(tune_data.columns[1:-1])
+
+        tune_model_params, tune_trainer_params, tune_optimizer_params = split_params(model_params)
 
         model_params = {**fixed_model_params, **tune_model_params}
         trainer_params = {**fixed_trainer_params, **tune_trainer_params}
@@ -202,7 +274,8 @@ for combo in param_combinations:
             target=target_col,
             continuous_cols=num_col_names,
             categorical_cols=cat_col_names,
-            num_workers=0
+            num_workers=0,
+            normalize_continuous_features = False,
         )
         trainer_config = TrainerConfig(**trainer_params, 
                                         trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
@@ -221,11 +294,11 @@ for combo in param_combinations:
         estimator.fit(train = tune_data)
         
         pred_df = estimator.predict(val_data)
-
+        pred_df["Expression_prediction"] = y_scaler.inverse_transform(pred_df["Expression_prediction"])
+        val_data["Expression"] = y_scaler.inverse_transform(val_data["Expression"])
         # scale back to original scale for validation
         if config["preprocessing"]["y_scaling"] == "log2":
-            expd = exp2m1(pred_df["Expression_prediction"])
-            pred_df["Expression_prediction"] = expd
+            pred_df["Expression_prediction"] = exp2m1(pred_df["Expression_prediction"])
         
         y_pred_raw=pred_df["Expression_prediction"].values.ravel()
         y_test_raw=val_data["Expression"].values.ravel()
@@ -237,9 +310,61 @@ for combo in param_combinations:
     combo_rmses.append(new_row)
 
 overall_best_params_with_rmse = min(combo_rmses, key=lambda x: x['RMSE'])
-overall_best_params = best_params_with_rmse.copy()
+overall_best_params = overall_best_params_with_rmse.copy()
 del overall_best_params['RMSE']
 
 with open(join(exp_dir,"tuned_params.json"), "w") as f:
     json.dump(overall_best_params, f, indent=2)
 
+'''
+---- REFIT MODEL WITH BEST PARAMS ON ALL DATA----------------------------------
+'''
+best_model_params, best_selector_params, best_selector_estimator_params = split_sk_params(overall_best_params)
+# by default, pytorch_tabular's models perform standard scaling so only log scale here
+if config["preprocessing"]["y_scaling"] == "log2":
+    data["Expression"] = log2p1(data["Expression"])
+
+# standard scaling both x and y
+x_scaler =  StandardScaler()
+y_scaler = StandardScaler()
+data.iloc[:,1:-1] = x_scaler.fit_transform(data.iloc[:,1:-1])
+data["Expression"] = y_scaler.fit_transform(data["Expression"])
+
+if config["feature_selection"]["apply"] == True:
+    selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
+    selector_estimator.set_params(**selector_estimator_params)
+    selector_name = config["feature_selection"]["selector_name"]
+    selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
+    data.iloc[:,-1:1] = selector.fit_transform(data.iloc[:,-1:1])
+
+num_col_names = list(data.columns[1:-1])
+model_params, trainer_params, optimizer_params = split_params(best_model_params)
+
+model_params = {**fixed_model_params, **model_params}
+trainer_params = {**fixed_trainer_params, **trainer_params}
+optimizer_params = {**fixed_optimizer_params, **optimizer_params}
+
+data_config = DataConfig(
+    target=target_col,
+    continuous_cols=num_col_names,
+    categorical_cols=cat_col_names,
+    num_workers=0,
+    normalize_continuous_features=False,
+)
+trainer_config = TrainerConfig(**trainer_params, 
+                                trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
+                                "log_every_n_steps": 2}) 
+                                                                                
+optimizer_config = OptimizerConfig(**optimizer_params)
+model_config = TabTransformerConfig(**model_params)
+
+estimator = TabularModel(
+    data_config=data_config,
+    model_config=model_config,
+    trainer_config=trainer_config,
+    optimizer_config=optimizer_config,
+)
+
+estimator.fit(data)
+
+joblib.dump(estimator, join(exp_dir, "estimator.joblib"))

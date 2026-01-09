@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'model_config__max_depth': 15, 'model_config_max_features': 100, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 5}	41.75481750536573	0.19297721925605382
+1	{'model_config__max_depth': 15, 'model_config_max_features': 300, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 1}	51.02965024330799	0.3185297695115321
+2	{'model_config__max_depth': 15, 'model_config_max_features': 500, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 1}	100.963080764729	0.46203378116091615
+3	{'model_config__max_depth': 15, 'model_config_max_features': 300, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 5}	334.8212141250219	0.12413248379671453
+4	{'model_config__max_depth': 15, 'model_config_max_features': 300, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 20}	98.49555015113339	0.9366293740922789
+5	{'model_config__max_depth': 15, 'model_config_max_features': 300, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 1}	3671.5297465652975	0.11188487591258547
+6	{'model_config__max_depth': 15, 'model_config_max_features': 500, 'selector_estimator_config__n_clusters': 500, 'min_samples_leaf': 20}	84.169059260118	0.3463073782436791

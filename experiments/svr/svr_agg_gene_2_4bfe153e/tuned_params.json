@@ -1,0 +1,6 @@
+{
+  "regressor__regressor__kernel": "rbf",
+  "regressor__regressor__C": 0.005,
+  "regressor__regressor__epsilon": 0.01,
+  "selector_estimator_config__n_clusters": 50
+}

@@ -1,0 +1,64 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    degree: 2
+  name: support_vector
+evaluation:
+  estimator: elastic_net
+  eval_config: {}
+  n_splits: 5
+  plot: true
+  random_state: 7
+  test_size: 0.3
+experiment:
+  description: SVR with feature agglomeration as feature extraction method with ward
+    algorithm.
+  name: svr/svr_agg_gene_3
+feature_selection:
+  apply: true
+  estimator_config:
+    name: feature_agg
+    params: {}
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 5
+    param_grid:
+      regressor__regressor__C:
+      - 0.005
+      - 0.01
+      - 0.1
+      - 0.5
+      - 1.0
+      regressor__regressor__epsilon:
+      - 0.1
+      - 0.5
+      - 1.0
+      - 10
+      - 100
+      regressor__regressor__gamma:
+      - scale
+      - 0.002
+      - 0.01
+      regressor__regressor__kernel:
+      - poly
+      - rbf
+      - sigmoid
+      selector_estimator_config__n_clusters:
+      - 700
+      - 900
+      - 1300
+    scoring: neg_mean_squared_error

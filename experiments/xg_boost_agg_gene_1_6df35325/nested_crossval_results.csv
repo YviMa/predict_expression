@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'model_config__min_child_weight': 1, 'model_config__max_depth': 6, 'model_config__subsample': 1, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	49.068120005116874	0.06948169252158909
+1	{'model_config__min_child_weight': 1, 'model_config__max_depth': 10, 'model_config__subsample': 1, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	50.78703349135942	0.28957660510194605
+2	{'model_config__min_child_weight': 1, 'model_config__max_depth': 4, 'model_config__subsample': 1, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	70.35218768984494	0.9633927384109163
+3	{'model_config__min_child_weight': 10, 'model_config__max_depth': 4, 'model_config__subsample': 0.8, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	333.0015261840061	0.2974478242969728
+4	{'model_config__min_child_weight': 1, 'model_config__max_depth': 6, 'model_config__subsample': 1, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	94.04873030276579	0.7741175236035145
+5	{'model_config__min_child_weight': 10, 'model_config__max_depth': 6, 'model_config__subsample': 0.8, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	3670.83592443118	0.08659722139555888
+6	{'model_config__min_child_weight': 5, 'model_config__max_depth': 4, 'model_config__subsample': 1, 'model_config__gamma': 1, 'selector_estimator_config__n_clusters': 500}	81.02643252275925	0.3622367870841856

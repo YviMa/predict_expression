@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	120.07214102547601	0.7351299570491764
+1	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	0.052607482131525135	
+2	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	181.69722302054382	0.7904314835037959
+3	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	268.4563878496725	0.6327111555075536
+4	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	9.841940145840914	0.4109220992607308
+5	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	0.041270732454323035	
+6	{'regressor__regressor__kernel': 'rbf', 'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 0.01, 'selector_estimator_config__n_clusters': 50}	0.052133285306039646	

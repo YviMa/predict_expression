@@ -1,0 +1,6 @@
+{
+  "model_config__max_depth": 4,
+  "model_config_max_features": 50,
+  "selector_estimator_config__n_clusters": 30,
+  "min_samples_leaf": 50
+}

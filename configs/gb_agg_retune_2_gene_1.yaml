@@ -1,0 +1,40 @@
+experiment: 
+  name: xgb_agg_retune_2_gene_1
+  description: "Second retune because boundries of grid were hit again."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: true
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: feature_agg 
+    params: {n_clusters: 500}
+
+estimator:
+  name: xg_boost
+  est_params: {tree_method: "hist", device: "cuda"}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'model_config__min_child_weight': [1, 5],
+    'model_config__max_depth': [2, 4, 6],
+    'model_config__subsample': [0.5, 0.8],
+    'model_config__gamma': [0.3, 0.5]}
+    cv: 5 # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+    scoring: "neg_mean_squared_error" # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+

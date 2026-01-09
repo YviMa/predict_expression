@@ -25,17 +25,22 @@ from feature_selection import get_feature_selector
 import rmm
 from rmm.allocators.cupy import rmm_cupy_allocator
 
+cuml.internals.logger.set_level(4)
 # Initialize RMM pool to use 50% of available GPU memory
 # This keeps the memory space "warm" and stable
 rmm.reinitialize(
     pool_allocator=True, 
     initial_pool_size=None, # Automatically determines size
-    managed_memory=False
+    managed_memory=True
 )
 
 # Tell CuPy to use RMM for its allocations too
 cp.cuda.set_allocator(rmm_cupy_allocator)
 
+gc.collect()
+
+cp.cuda.runtime.deviceSynchronize() # Force all kernels to finish
+cp.get_default_memory_pool().free_all_blocks()
 cp.get_default_pinned_memory_pool().free_all_blocks()
 
 # parse the yaml file 
@@ -64,7 +69,6 @@ X_scaler = StandardScaler()
 # initialize estimator
 est_name = config["estimator"]["name"]
 est_params = config["estimator"]['est_params']
-model = create_model(est_name, est_params)
 
 '''
 --- NESTED CROSS VALIDATION----------------
@@ -90,10 +94,11 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
     for idx_2, combo in enumerate(param_combinations):
         if idx_2 % 2 == 0:
             print("param combo nr. ", idx_2, "/", len(param_combinations))
-        model_params, selector_params, selector_estimator_params = split_sk_params(combo)
-        model.set_params(**model_params)
         rmses = []
         for (inner_train_index, inner_test_index) in inner_kf.split(X_train):
+            model = create_model(est_name, est_params)
+            model_params, selector_params, selector_estimator_params = split_sk_params(combo)
+            model.set_params(**model_params)
             X_tune, y_tune  = X_train.iloc[inner_train_index, :].copy(), y_train.iloc[inner_train_index].copy()
             X_val, y_val  = X_train.iloc[inner_test_index, :].copy(), y_train.iloc[inner_test_index].copy()
 
@@ -135,6 +140,10 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
 
             rmse = root_mean_squared_error(y_pred_raw, y_val_raw)
             rmses.append(rmse)
+            del model, y_pred
+            gc.collect()
+            cp.get_default_memory_pool().free_all_blocks()
+            cp.get_default_pinned_memory_pool().free_all_blocks()
 
         mean_rmse = np.array(rmses).mean()
         new_row = {**combo, **{"RMSE": mean_rmse}}
@@ -145,6 +154,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
     del best_params['RMSE']
 
     best_model_params, best_selector_params, best_selector_estimator_params = split_sk_params(best_params)
+    model = create_model(est_name, est_params)
     model.set_params(**best_model_params)
 
     X_train = X_scaler.fit_transform(X_train)
@@ -204,9 +214,10 @@ kf = inner_kf = KFold(n_splits=5, shuffle = True, random_state = 9)
 combo_rmses = []
 for combo in param_combinations:
     model_params, selector_params, selector_estimator_params = split_sk_params(combo)
-    model.set_params(**model_params)
     rmses = []
     for (train_index, test_index) in kf.split(X):
+        model = create_model(est_name, est_params)
+        model.set_params(**model_params)
 
         X_tune, y_tune  = X.iloc[train_index, :].copy(), y.iloc[train_index].copy()
         X_val, y_val  = X.iloc[test_index, :].copy(), y.iloc[test_index].copy()
@@ -249,14 +260,14 @@ for combo in param_combinations:
 
         rmse = root_mean_squared_error(y_pred_raw, y_val_raw)
         rmses.append(rmse)
+        del model, y_pred
+        gc.collect()
+        cp.get_default_memory_pool().free_all_blocks()
 
     mean_rmse = np.array(rmses).mean()
     new_row = {**combo, **{"RMSE": mean_rmse}}
     combo_rmses.append(new_row)
 
-overall_best_params_with_rmse = min(combo_rmses, key=lambda x: x['RMSE'])
-overall_best_params = overall_best_params_with_rmse.copy()
-del overall_best_params['RMSE']
 
 overall_best_params_with_rmse = min(combo_rmses, key=lambda x: x['RMSE'])
 overall_best_params = overall_best_params_with_rmse.copy()
@@ -293,6 +304,7 @@ if config["preprocessing"]["y_scaling"][1] == "standard":
     y_full_gpu = (y_full_gpu - y_mu) / y_std
 
 # 3. Final Model Fit
+model = create_model(est_name, est_params)
 model.set_params(**model_params)
 model.fit(cp.array(X_full_final), y_full_gpu)
 

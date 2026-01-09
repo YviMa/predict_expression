@@ -130,3 +130,20 @@ def split_params(params_grid):
             optimizer_params.update({subkeys[1]: params_grid[key]})
     
     return model_params, trainer_params, optimizer_params
+
+def split_sk_params(params_grid):
+    model_params = {}
+    selector_params = {}
+    selector_estimator_params = {}
+
+    for key in params_grid.keys():
+        subkeys = key.split("__", 1)
+        #print(subkeys)
+        if subkeys[0] == "model_config":
+            model_params.update({subkeys[1]: params_grid[key]})
+        if subkeys[0] == "selector_config":
+            selector_params.update({subkeys[1]: params_grid[key]})
+        if subkeys[0] == "selector_estimator_config":
+            selector_estimator_params.update({subkeys[1]: params_grid[key]})
+    
+    return model_params, selector_params, selector_estimator_params

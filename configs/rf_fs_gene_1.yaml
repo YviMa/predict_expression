@@ -1,6 +1,6 @@
 experiment:
-  name: rf_fs_gene_1
-  description: "Random Forest for feature selection only."
+  name: rf_fs_elasticnet_gene_1
+  description: "Random Forest feature selection + ElasticNet regression."
 
 data:
   file_name: gene_1.txt
@@ -17,29 +17,28 @@ preprocessing:
 
 feature_selection:
   apply: true
-  selector_name: scikitlearn_estimator    
-  selector_params:
-    threshold: ["median", 0.01, 0.02]         
+  selector_name: scikitlearn_estimator
+  selector_params: {}
 
   estimator_config:
     name: random_forest
     params:
       n_estimators: 500
-      max_depth:
+      max_depth: null
       random_state: 42
       n_jobs: -1
 
 estimator:
-  name: random_forest                 
-  est_params: {}
+  name: elastic_net
+  est_params:
+    max_iter: 3000
+    tol: 0.001
 
 tuning:
   tuning_config:
     param_grid:
-      regressor__selector__threshold: ["median", "mean"]
-      regressor__selector__estimator__n_estimators: [300, 500]
-      regressor__selector__estimator__max_features: ["sqrt", 0.33]
+      regressor__selector__threshold: ["median", "mean", 0.01]
+      regressor__regressor__alpha: [0.01, 0.1, 1.0]
+      regressor__regressor__l1_ratio: [0.1, 0.5, 0.9]
     cv: 5
     scoring: "neg_mean_squared_error"
-
-

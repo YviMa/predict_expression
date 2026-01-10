@@ -33,3 +33,27 @@ Traceback (most recent call last):
     ~~~~~~~~~~^^^^^^
 KeyboardInterrupt
 pearsonr undefined: all test samples are equal
+Traceback (most recent call last):
+  File "/home/users1/rkxv/s2673208/predict_expression/gpu_src/sk_tune.py", line 14, in <module>
+    import cudf
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/site-packages/cudf/__init__.py", line 19, in <module>
+    _setup_numba()
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/site-packages/cudf/utils/_numba.py", line 118, in _setup_numba
+    versions = safe_get_versions()
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/site-packages/cudf/utils/_ptxcompiler.py", line 113, in safe_get_versions
+    driver_version, runtime_version = get_versions()
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/site-packages/cudf/utils/_ptxcompiler.py", line 55, in get_versions
+    cp = subprocess.run(
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 1154, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 2047, in _communicate
+    self.wait(timeout=self._remaining_time(endtime))
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 1209, in wait
+    return self._wait(timeout=timeout)
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 1959, in _wait
+    (pid, sts) = self._try_wait(0)
+  File "/home/users1/rkxv/s2673208/miniconda3/envs/rapids_competition_env/lib/python3.10/subprocess.py", line 1917, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+KeyboardInterrupt

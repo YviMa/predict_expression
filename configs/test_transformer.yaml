@@ -14,13 +14,12 @@ preprocessing:
 
 
 feature_selection:
-  apply: false
-  selector: sklearn_model
-  estimator: elastic_net
-  tuning:
-    tune: false
-  params: {"alpha": 0.3,
-"l1_ratio": 0.1}
+  apply: true
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: feature_agg 
+    params: {}
 
 estimator:
   name: tabtransformer

@@ -32,6 +32,14 @@ def create_model(name, params=None):
         raise ValueError(f"Unknown model: {name}")
     if params == None:
         params = {}
+    if name == "hierarchical":
+        classifier_name = params["clasifier_name"]
+        regressor_name = params["regressor_name"]
+        classifier_params = params["classifier_params"]
+        regressor_params = params["regressor_params"]
+        classifier = create_model(classifier_name, classifier_params)
+        regressor = create_model(regressor_name, regressor_params)
+        return MODEL_REGISTRY[name](classifier=classifier, regressor=regressor)
     return MODEL_REGISTRY[name](**params)
 
 class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):

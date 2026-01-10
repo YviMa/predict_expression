@@ -29,34 +29,27 @@ def create_model(name, params=None):
     return MODEL_REGISTRY[name](**params)
 
 class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, classifier, regressor_dict):
-        self.classifier = classifier
-        self.regressor_dict = regressor_dict # e.g., {0: LinearRegression(), 1: XGBRegressor()}
-        self.regressors_ = {}
+    def __init__(self, classifier_name, regressor_name):
+        self.classifier_name = classifier_name
+        self.regressor_name = regressor_name
 
     def fit(self, X, y, sample_weight=None):
-        y_labels = self._get_labels(y) 
-        self.classifier_ = clone(self.classifier).fit(X, y_labels)
-        
-        # 2. Fit specialized regressors for each predicted class
-        predicted_labels = self.classifier_.predict(X)
-        for label, reg in self.regressor_dict.items():
-            mask = (predicted_labels == label)
-            if np.any(mask):
-                self.regressors_[label] = clone(reg).fit(X[mask], y[mask])
+        self.classifier = create_model(self.classifier_name)
+        self.regressor = create_model(self.regressor_name)
+        given_labels = self._get_labels(y)
+        self.classifier.fit(X,given_labels)
+        mask_1 = given_labels == 1
+        X_1, y_1 = X[mask_1,:], y[mask_1]
+        self.regressor.fit(X_1, y_1)
         return self
 
     def predict(self, X):
-        # predict class label
-        labels = self.classifier_.predict(X)
-        predictions = np.zeros(X.shape[0])
-        
-        # apply regressor
-        for label, reg in self.regressors_.items():
-            mask = (labels == label)
-            if np.any(mask):
-                predictions[mask] = reg.predict(X[mask])
-        return predictions
+        self.labels = self.classifier.predict(X)
+        mask_1 = self.labels == 1
+        X_1 = X[mask_1,:]
+        y_pred = np.zeros(X.shape[0])
+        y_pred[mask_1] = self.regressor.predict(X_1)
+        return y_pred
 
     def _get_labels(self, y):
         return (y > 0).astype(int)

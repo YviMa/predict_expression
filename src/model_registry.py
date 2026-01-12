@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import ElasticNet, Lars, LassoLars
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor
-from sklearn.svm import SVR
+from sklearn.dummy import DummyRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor, RandomForestClassifier, AdaBoostClassifier
+from sklearn.svm import SVR, SVC
+from imblearn.ensemble import BalancedRandomForestClassifier, RUSBoostClassifier
 from sklearn.decomposition import PCA
 from sklearn.cluster import FeatureAgglomeration
 from sklearn.base import BaseEstimator, RegressorMixin, clone
@@ -18,7 +20,11 @@ MODEL_REGISTRY = {
     "elastic_net": ElasticNet,
     "gradient_boost": GradientBoostingRegressor,
     "random_forest": RandomForestRegressor,
-    "support_vector": SVR
+    "support_vector": SVR,
+    "lasso_lars": LassoLars,
+    "balanced_rf": BalancedRandomForestClassifier,
+    "balanced_ada_boost": RUSBoostClassifier,
+    "svc": SVC
 }
 
 def create_model(name, params=None):
@@ -26,29 +32,42 @@ def create_model(name, params=None):
         raise ValueError(f"Unknown model: {name}")
     if params == None:
         params = {}
+    if name == "hierarchical":
+        classifier_name = params["classifier_name"]
+        regressor_name = params["regressor_name"]
+        classifier_params = params["classifier_params"]
+        regressor_params = params["regressor_params"]
+        classifier = create_model(classifier_name, classifier_params)
+        regressor = create_model(regressor_name, regressor_params)
+        return MODEL_REGISTRY[name](classifier=classifier, regressor=regressor)
     return MODEL_REGISTRY[name](**params)
 
 class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, classifier_name, regressor_name):
-        self.classifier_name = classifier_name
-        self.regressor_name = regressor_name
+    def __init__(self, classifier=None, regressor=None):
+        self.classifier = classifier
+        self.regressor = regressor
 
     def fit(self, X, y, sample_weight=None):
-        self.classifier = create_model(self.classifier_name)
-        self.regressor = create_model(self.regressor_name)
         given_labels = self._get_labels(y)
-        self.classifier.fit(X,given_labels)
+        self.classifier_ = clone(self.classifier)
+        self.regressor_ = clone(self.regressor)
+        self.classifier_.fit(X,given_labels)
         mask_1 = given_labels == 1
+        if not np.any(mask_1):
+            self.regressor_ = DummyRegressor(strategy="constant", constant=0.0)
+            self.regressor_.fit(X, y) 
+            return self
         X_1, y_1 = X[mask_1,:], y[mask_1]
-        self.regressor.fit(X_1, y_1)
+        self.regressor_.fit(X_1, y_1)
+        self.n_features_in_ = X.shape[1]
         return self
 
     def predict(self, X):
-        self.labels = self.classifier.predict(X)
+        self.labels = self.classifier_.predict(X)
         mask_1 = self.labels == 1
         X_1 = X[mask_1,:]
         y_pred = np.zeros(X.shape[0])
-        y_pred[mask_1] = self.regressor.predict(X_1)
+        y_pred[mask_1] = self.regressor_.predict(X_1)
         return y_pred
 
     def _get_labels(self, y):

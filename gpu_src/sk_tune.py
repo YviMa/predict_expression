@@ -25,16 +25,17 @@ from feature_selection import get_feature_selector
 import rmm
 from rmm.allocators.cupy import rmm_cupy_allocator
 
+''' 
+----MEMORY STUFF------------------------------------------------------
+'''
 cuml.internals.logger.set_level(4)
-# Initialize RMM pool to use 50% of available GPU memory
-# This keeps the memory space "warm" and stable
+
 rmm.reinitialize(
     pool_allocator=True, 
-    initial_pool_size=None, # Automatically determines size
+    initial_pool_size=None, 
     managed_memory=True
 )
 
-# Tell CuPy to use RMM for its allocations too
 cp.cuda.set_allocator(rmm_cupy_allocator)
 
 gc.collect()
@@ -42,6 +43,9 @@ gc.collect()
 cp.cuda.runtime.deviceSynchronize() # Force all kernels to finish
 cp.get_default_memory_pool().free_all_blocks()
 cp.get_default_pinned_memory_pool().free_all_blocks()
+'''
+----------------------------------------------------------------------
+'''
 
 # parse the yaml file 
 parser = argparse.ArgumentParser()
@@ -110,8 +114,8 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
                 selector_estimator.set_params(**selector_estimator_params)
                 selector_name = config["feature_selection"]["selector_name"]
                 selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
-                X_tune = selector.fit_transform(X_tune)
-                X_val = selector.transform(X_val)
+                X_tune = selector.fit_transform(X_tune, y_tune)
+                X_val = selector.transform(X_val,y_val)
 
             X_tune_gpu, y_tune_gpu = cp.array(X_tune), cp.array(y_tune)
             X_val_gpu, y_val_gpu = cp.array(X_val), cp.array(y_val)
@@ -165,8 +169,8 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
         selector_estimator.set_params(**best_selector_estimator_params)
         selector_name = config["feature_selection"]["selector_name"]
         selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=best_selector_params) 
-        X_train = selector.fit_transform(X_train)
-        X_test = selector.transform(X_test)
+        X_train = selector.fit_transform(X_train, y_train)
+        X_test = selector.transform(X_test, y_test)
 
     X_train_gpu,  y_train_gpu= cp.array(X_train), cp.array(y_train)
     X_test_gpu, y_test_gpu = cp.array(X_test), cp.array(y_test)
@@ -230,8 +234,8 @@ for combo in param_combinations:
             selector_estimator.set_params(**selector_estimator_params)
             selector_name = config["feature_selection"]["selector_name"]
             selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
-            X_tune = selector.fit_transform(X_tune)
-            X_val = selector.transform(X_val)
+            X_tune = selector.fit_transform(X_tune, y_tune)
+            X_val = selector.transform(X_val, y_val)
 
         X_tune_gpu, y_tune_gpu = cp.array(X_tune), cp.array(y_tune)
         X_val_gpu, y_val_gpu = cp.array(X_val), cp.array(y_val)
@@ -280,19 +284,6 @@ model_params, selector_params, selector_estimator_params = split_sk_params(overa
 final_scaler = X_scaler # This uses the X_scaler class you defined earlier
 X_full_scaled = final_scaler.fit_transform(X)
 
-# Final Feature Aggregation (CPU)
-if config["feature_selection"]["apply"]:
-    selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
-    selector_estimator.set_params(**selector_estimator_params)
-    selector = get_feature_selector(name=config["feature_selection"]["selector_name"], 
-                                   estimator=selector_estimator, 
-                                   params=selector_params)
-    X_full_final = selector.fit_transform(X_full_scaled)
-    final_labels = selector.estimator.labels_
-else:
-    X_full_final = X_full_scaled
-    final_labels = None
-
 # 2. Final Y-Scaling
 y_full_gpu = cp.array(y)
 y_mu, y_std = 0, 1
@@ -302,6 +293,19 @@ if config["preprocessing"]["y_scaling"][1] == "standard":
     y_mu = cp.asarray(y_full_gpu.mean())
     y_std = cp.asarray(y_full_gpu.std(ddof=1) + 1e-10)
     y_full_gpu = (y_full_gpu - y_mu) / y_std
+
+# Final Feature Aggregation (CPU)
+if config["feature_selection"]["apply"]:
+    selector_estimator = create_model(**config["feature_selection"]["estimator_config"]) 
+    selector_estimator.set_params(**selector_estimator_params)
+    selector = get_feature_selector(name=config["feature_selection"]["selector_name"], 
+                                   estimator=selector_estimator, 
+                                   params=selector_params)
+    X_full_final = selector.fit_transform(X_full_scaled, y_full_gpu)
+    final_labels = selector.estimator.labels_
+else:
+    X_full_final = X_full_scaled
+    final_labels = None
 
 # 3. Final Model Fit
 model = create_model(est_name, est_params)

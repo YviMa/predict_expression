@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'model_config__alpha': 0.2, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 50}	119.21520557782495	0.9892936863318192
+1	{'model_config__alpha': 0.3, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 100}	0.13668457337647438	
+2	{'model_config__alpha': 0.2, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 200}	181.03855196005517	0.9513713220147462
+3	{'model_config__alpha': 0.2, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 100}	268.1681429827199	0.9156579016926385
+4	{'model_config__alpha': 0.001, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 200}	8766.039414648763	0.9993380038183721
+5	{'model_config__alpha': 0.3, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 100}	0.147569814855243	
+6	{'model_config__alpha': 0.3, 'model_config_l1_ratio': 0.01, 'selector_estimator_config__n_clusters': 200}	0.2065776256464867	

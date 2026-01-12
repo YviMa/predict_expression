@@ -1,0 +1,40 @@
+experiment: 
+  name: twostep/twostep_adaboost_svr_gene_1
+  description: "Two step model using random forest for classification and svr for regression."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: hierarchical
+  est_params: 
+    classifier_name : balanced_ada_boost
+    classifier_params: {}
+    regressor_name: support_vector
+    regressor_params: {"tol": 0.001, "max_iter": 5000}
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'regressor__regressor__classifier__n_estimators': [50, 100],
+    'regressor__regressor__classifier__learning_rate': [0.2, 0.5],
+    'regressor__regressor__regressor__kernel': ["rbf", "sigmoid"],
+    'regressor__regressor__regressor__gamma': ["scale", 0.002],
+    'regressor__regressor__regressor__C': [0.01, 0.1, 0.5, 1.0],
+    'regressor__regressor__regressor__epsilon': [0.1, 0.5, 1.0, 10]
+    }
+    cv: 5
+    scoring: "neg_mean_squared_error"

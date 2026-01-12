@@ -1,0 +1,43 @@
+data:
+  data_dir: data/raw
+  file_name: gene_2.txt
+estimator:
+  est_params: {}
+  name: random_forest
+evaluation:
+  estimator: elastic_net
+  eval_config: {}
+  n_splits: 5
+  plot: true
+  random_state: 7
+  test_size: 0.3
+experiment:
+  description: Random forest without feature selection.
+  name: random_forest_gene_2
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 3
+    param_grid:
+      regressor__regressor__max_depth:
+      - 4
+      - 15
+      - 20
+      regressor__regressor__max_features:
+      - 100
+      - 200
+      - 300
+      regressor__regressor__n_estimators:
+      - 500
+    scoring: neg_mean_squared_error

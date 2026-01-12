@@ -1,5 +1,0 @@
-{
-  "model_config__min_child_weight": 5,
-  "model_config__subsample": 0.8,
-  "model_config__gamma": 0
-}

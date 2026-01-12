@@ -1,5 +1,0 @@
-{
-  "model_config__alpha": 0.1,
-  "model_config_l1_ratio": 0.01,
-  "selector_estimator_config__n_clusters": 50
-}

@@ -1,0 +1,38 @@
+experiment: 
+  name: twostep/twostep_adaboost_rf_gene_1
+  description: "Two step model using random forest for classification and RF for regression."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: hierarchical
+  est_params: 
+    classifier_name : balanced_ada_boost
+    classifier_params: {}
+    regressor_name: random_forest
+    regressor_params: {"n_estimators": 500}
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'regressor__regressor__classifier__n_estimators': [100, 150, 200],
+    'regressor__regressor__classifier__learning_rate': [0.05, 0.1, 0.2],
+    'regressor__regressor__regressor__max_depth': [12, 15, 17],
+    'regressor__regressor__regressor__max_features': [150, 200, 250]
+    }
+    cv: 5
+    scoring: "neg_mean_squared_error"

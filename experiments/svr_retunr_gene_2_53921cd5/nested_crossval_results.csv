@@ -1,8 +1,0 @@
-	best_combo	RMSE	pearsonr
-0	{'regressor__regressor__C': 0.1, 'regressor__regressor__epsilon': 0.1, 'regressor__regressor__gamma': 0.05, 'regressor__regressor__kernel': 'poly'}	29556590.103722125	0.20957138794312133
-1	{'regressor__regressor__C': 0.1, 'regressor__regressor__epsilon': 0.1, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'sigmoid'}	8.026841534885856	-0.008011508780849462
-2	{'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 1.0, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'poly'}	268.2200226931841	0.9940955057421459
-3	{'regressor__regressor__C': 0.1, 'regressor__regressor__epsilon': 0.01, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'sigmoid'}	3.098451996380117	-0.14366270670094436
-4	{'regressor__regressor__C': 0.1, 'regressor__regressor__epsilon': 0.1, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'sigmoid'}	120.703357945321	-0.18660805192823965
-5	{'regressor__regressor__C': 0.005, 'regressor__regressor__epsilon': 1.0, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'poly'}	176.05234245293715	0.9945066355249329
-6	{'regressor__regressor__C': 0.1, 'regressor__regressor__epsilon': 0.01, 'regressor__regressor__gamma': 0.01, 'regressor__regressor__kernel': 'sigmoid'}	0.8704989160506705	0.014608035464072733

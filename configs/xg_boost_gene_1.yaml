@@ -1,0 +1,34 @@
+experiment: 
+  name: xg_boost_gene_1
+  description: "XG Boost without feature selection."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false
+  
+estimator:
+  name: xg_boost
+  est_params: {tree_method: "hist", device: "cuda"}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'model_config__min_child_weight': [1, 5, 10],
+    'model_config__max_depth': [4, 6, 10],
+    'model_config__subsample': [0.8, 1],
+    'model_config__gamma': [1, 5, 10]}
+    cv: 5 # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+    scoring: "neg_mean_squared_error" # WARNING: these settings are fixed in the GPU code and must be changed in the script itself

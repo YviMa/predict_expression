@@ -1,0 +1,6 @@
+{
+  "regressor__regressor__classifier__max_depth": 20,
+  "regressor__regressor__classifier__max_features": 200,
+  "regressor__regressor__regressor__alpha": 0.5,
+  "regressor__regressor__regressor__l1_ratio": 0.5
+}

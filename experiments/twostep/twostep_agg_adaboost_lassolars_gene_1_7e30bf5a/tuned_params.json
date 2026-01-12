@@ -1,0 +1,6 @@
+{
+  "regressor__regressor__classifier__learning_rate": 0.3,
+  "regressor__regressor__classifier__n_estimators": 100,
+  "regressor__regressor__regressor__alpha": 0.02,
+  "regressor__selector__estimator__n_clusters": 400
+}

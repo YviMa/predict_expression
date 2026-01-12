@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__classifier__C': 5, 'regressor__regressor__regressor__max_depth': 15, 'regressor__regressor__regressor__max_features': 300}	45.64233344630804	0.7672096855291631
+1	{'regressor__regressor__classifier__C': 5, 'regressor__regressor__regressor__max_depth': 15, 'regressor__regressor__regressor__max_features': 200}	23.32680493103102	0.9641446314688211
+2	{'regressor__regressor__classifier__C': 10, 'regressor__regressor__regressor__max_depth': 10, 'regressor__regressor__regressor__max_features': 400}	3689.076096722272	0.01332152399836158
+3	{'regressor__regressor__classifier__C': 10, 'regressor__regressor__regressor__max_depth': 15, 'regressor__regressor__regressor__max_features': 300}	11.242908765601092	0.6771389611706752
+4	{'regressor__regressor__classifier__C': 10, 'regressor__regressor__regressor__max_depth': 15, 'regressor__regressor__regressor__max_features': 200}	27.67774766045973	0.5737260057515544
+5	{'regressor__regressor__classifier__C': 10, 'regressor__regressor__regressor__max_depth': 5, 'regressor__regressor__regressor__max_features': 400}	109.06314231924647	0.35513319573845026
+6	{'regressor__regressor__classifier__C': 5, 'regressor__regressor__regressor__max_depth': 20, 'regressor__regressor__regressor__max_features': 100}	27.58971664321433	0.7900871867591653

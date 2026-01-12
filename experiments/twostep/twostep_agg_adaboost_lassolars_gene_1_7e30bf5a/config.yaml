@@ -1,0 +1,54 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    classifier_name: balanced_ada_boost
+    classifier_params: {}
+    regressor_name: lasso_lars
+    regressor_params:
+      max_iter: 5000
+  name: hierarchical
+experiment:
+  description: Two step model using feature aggregation for feature extraction, ada
+    boost for classification and lassolars for regression.
+  name: twostep/twostep_agg_adaboost_lassolars_gene_1
+feature_selection:
+  apply: true
+  estimator_config:
+    name: feature_agg
+    params: {}
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 5
+    param_grid:
+      regressor__regressor__classifier__learning_rate:
+      - 0.1
+      - 0.2
+      - 0.3
+      regressor__regressor__classifier__n_estimators:
+      - 50
+      - 100
+      - 200
+      regressor__regressor__regressor__alpha:
+      - 0.02
+      - 0.1
+      - 0.5
+      - 1
+      regressor__selector__estimator__n_clusters:
+      - 300
+      - 400
+      - 600
+    scoring: neg_mean_squared_error

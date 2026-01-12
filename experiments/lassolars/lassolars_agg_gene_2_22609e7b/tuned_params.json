@@ -1,0 +1,4 @@
+{
+  "regressor__regressor__alpha": 1,
+  "regressor__selector__estimator__n_clusters": 50
+}

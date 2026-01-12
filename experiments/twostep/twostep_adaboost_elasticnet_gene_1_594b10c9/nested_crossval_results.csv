@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__classifier__learning_rate': 0.2, 'regressor__regressor__classifier__n_estimators': 50, 'regressor__regressor__regressor__alpha': 0.5, 'regressor__regressor__regressor__l1_ratio': 0.1}	43.39346375741443	0.6064891749736707
+1	{'regressor__regressor__classifier__learning_rate': 0.5, 'regressor__regressor__classifier__n_estimators': 100, 'regressor__regressor__regressor__alpha': 0.1, 'regressor__regressor__regressor__l1_ratio': 0.1}	26.0193757269373	0.820005885066457
+2	{'regressor__regressor__classifier__learning_rate': 0.5, 'regressor__regressor__classifier__n_estimators': 100, 'regressor__regressor__regressor__alpha': 0.2, 'regressor__regressor__regressor__l1_ratio': 0.9}	3689.461328793403	-0.03180735861217311
+3	{'regressor__regressor__classifier__learning_rate': 0.5, 'regressor__regressor__classifier__n_estimators': 50, 'regressor__regressor__regressor__alpha': 0.5, 'regressor__regressor__regressor__l1_ratio': 0.9}	20.974480602645723	0.365275212970633
+4	{'regressor__regressor__classifier__learning_rate': 0.2, 'regressor__regressor__classifier__n_estimators': 50, 'regressor__regressor__regressor__alpha': 0.5, 'regressor__regressor__regressor__l1_ratio': 0.9}	31.844519998751995	-0.019765690127329705
+5	{'regressor__regressor__classifier__learning_rate': 0.2, 'regressor__regressor__classifier__n_estimators': 50, 'regressor__regressor__regressor__alpha': 0.1, 'regressor__regressor__regressor__l1_ratio': 0.1}	110.47652026838092	0.2724325739807389
+6	{'regressor__regressor__classifier__learning_rate': 0.2, 'regressor__regressor__classifier__n_estimators': 50, 'regressor__regressor__regressor__alpha': 0.1, 'regressor__regressor__regressor__l1_ratio': 0.9}	27.1251375953918	0.8348129235947771

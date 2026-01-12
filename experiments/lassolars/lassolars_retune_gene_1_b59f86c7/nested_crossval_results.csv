@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__alpha': 0.01}	80.98089713049076	0.44394346151184655
+1	{'regressor__regressor__alpha': 0.1}	29.83809339424091	0.19846468114070875
+2	{'regressor__regressor__alpha': 0.01}	3689.3750013665053	-0.0036061418665398717
+3	{'regressor__regressor__alpha': 0.1}	39.279723310207	0.534914020052725
+4	{'regressor__regressor__alpha': 0.1}	29.730272831117087	0.49972843351500634
+5	{'regressor__regressor__alpha': 0.1}	112.3271561869264	0.35646321673445874
+6	{'regressor__regressor__alpha': 0.05}	31.76736607250708	0.8707888233972809

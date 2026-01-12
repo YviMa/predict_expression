@@ -1,0 +1,41 @@
+experiment: 
+  name: twostep/twostep_rf_elasticnet_gene_1
+  description: "Two step model using random forest for classification and elasticnet for regression."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: hierarchical
+  est_params: 
+    classifier_name : balanced_rf
+    classifier_params:
+      n_estimators: 500
+    regressor_name: elastic_net
+    regressor_params: 
+      max_iter: 10000
+      tol: 0.01
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'regressor__regressor__classifier__max_depth': [20, 30],
+    'regressor__regressor__classifier__max_features': ["sqrt", 200],
+    'regressor__regressor__regressor__alpha': [0.1, 0.2, 0.5],
+    'regressor__regressor__regressor__l1_ratio': [0.1, 0.3, 0.5, 0.9]}
+    cv: 5
+    scoring: "neg_mean_squared_error"

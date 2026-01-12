@@ -1,0 +1,46 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    model_params__input_embed_dim: 24
+    model_params__num_heads: 2
+    model_params__task: regression
+    model_params__transformer_activation: LeakyReLU
+    optimizer_params__optimizer: Adam
+    trainer_params__batch_size: 8
+    trainer_params__max_epochs: 200
+  name: tabtransformer
+experiment:
+  description: Transformer with rf as feature selection.
+  name: transformer/transformer_rf_gene_1
+feature_selection:
+  apply: true
+  estimator_config:
+    name: random_forest
+    params:
+      n_estimators: 500
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling: None
+  y_scaler_params: {}
+  y_scaling: log2
+tuning:
+  param_grid:
+    model_config__model_params__learning_rate:
+    - 0.0001
+    - 0.001
+    model_config__model_params__num_attn_blocks:
+    - 1
+    - 2
+    selector_config__threshold:
+    - median
+    - 0.5*median
+    selector_estimator_config__max_depth:
+    - 15
+    - 20
+    selector_estimator_config__max_features:
+    - 100
+    - 200

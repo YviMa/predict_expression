@@ -34,3 +34,4 @@ rmm_log.txt
 
 # Models
 saved_models/
+nohup.out

@@ -100,7 +100,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(data)
                 selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
                 y_tune = tune_data["Expression"]
                 y_val = val_data["Expression"]
-                tune_data = selector.fit_transform(tune_data.iloc[:,:-1])
+                tune_data = selector.fit_transform(tune_data.iloc[:,:-1], tune_data["Expression"])
                 val_data = selector.transform(val_data.iloc[:,:-1])
                 tune_data["Expression"]=y_tune
                 val_data["Expression"]=y_val
@@ -121,7 +121,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(data)
                 normalize_continuous_features = False,
             )
             trainer_config = TrainerConfig(**trainer_params, 
-                                           accumulate_grad_batches = 4,
+                                           accumulate_grad_batches = 8,
                                            trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
                                             "log_every_n_steps": 2}) 
                                                                                             
@@ -182,7 +182,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(data)
         selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
         y_train = train_data["Expression"]
         y_test = test_data["Expression"]
-        train_data = selector.fit_transform(train_data.iloc[:,:-1])
+        train_data = selector.fit_transform(train_data.iloc[:,:-1], train_data["Expression"])
         test_data = selector.transform(test_data.iloc[:,:-1])
         train_data["Expression"]=y_train
         test_data["Expression"]=y_test
@@ -204,7 +204,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(data)
         normalize_continuous_features = False
     )
 
-    trainer_config = TrainerConfig(**trainer_params, accumulate_grad_batches = 4, trainer_kwargs = {"enable_progress_bar": False})
+    trainer_config = TrainerConfig(**trainer_params, accumulate_grad_batches = 8, trainer_kwargs = {"enable_progress_bar": False})
     optimizer_config = OptimizerConfig(**optimizer_params)
     model_config = FTTransformerConfig(**model_params)
 
@@ -275,7 +275,7 @@ for combo in param_combinations:
             selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
             y_tune = tune_data["Expression"]
             y_val = val_data["Expression"]
-            tune_data = selector.fit_transform(tune_data.iloc[:,:-1])
+            tune_data = selector.fit_transform(tune_data.iloc[:,:-1], tune_data["Expression"])
             val_data = selector.transform(val_data.iloc[:,:-1])
             tune_data["Expression"]=y_tune
             val_data["Expression"]=y_val
@@ -296,7 +296,7 @@ for combo in param_combinations:
             normalize_continuous_features = False,
         )
         trainer_config = TrainerConfig(**trainer_params, 
-                                       accumulate_grad_batches=4,
+                                       accumulate_grad_batches=8,
                                         trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
                                         "log_every_n_steps": 2}) 
                                                                                         
@@ -358,7 +358,7 @@ if config["feature_selection"]["apply"] == True:
     selector_name = config["feature_selection"]["selector_name"]
     selector = get_feature_selector(name=selector_name, estimator=selector_estimator, params=selector_params) 
     y = data["Expression"]
-    data = selector.fit_transform(data.iloc[:,:-1])
+    data = selector.fit_transform(data.iloc[:,:-1], data["Expression"])
     data["Expression"] = y
 
 num_col_names = list(data.columns[:-1])
@@ -376,7 +376,7 @@ data_config = DataConfig(
     normalize_continuous_features=False,
 )
 trainer_config = TrainerConfig(**trainer_params, 
-                               accumulate_grad_batches=4,
+                               accumulate_grad_batches=8,
                                 trainer_kwargs = {"enable_progress_bar": False, # very important, if disabled will produce error due to missing display
                                 "log_every_n_steps": 2}) 
                                                                                 

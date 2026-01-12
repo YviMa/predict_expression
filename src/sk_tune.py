@@ -80,7 +80,7 @@ for idx, (train_index, test_index) in enumerate(kf.split(X)):
     X_train, y_train = X.iloc[train_index,:], y[train_index]
     X_test, y_test = X.iloc[test_index,:], y[test_index]
 
-    grid = GridSearchCV(model, **tuning_config, verbose =2)
+    grid = GridSearchCV(model, **tuning_config, verbose =3)
     grid.fit(X_train, y_train)
 
     best_params = grid.best_params_

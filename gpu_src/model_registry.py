@@ -1,8 +1,10 @@
 import cudf
 import cupy as cp
-from cuml.linear_model import ElasticNet
+from cuml import ElasticNet
 from sklearn.linear_model import Lars, LassoLars
-from cuml.ensemble import RandomForestRegressor
+from cuml.ensemble import RandomForestRegressor, RandomForestClassifier 
+from sklearn.ensemble import RandomForestRegressor as RandomForestSk
+from sklearn.linear_model import ElasticNet as ElasticNetSk
 from scipy.sparse import diags
 import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor, AdaBoostRegressor
@@ -24,6 +26,8 @@ MODEL_REGISTRY = {
     "elastic_net": ElasticNet,
     "xg_boost": xgb.XGBRegressor,
     "random_forest": RandomForestRegressor,
+    "random_forest_cpu": RandomForestSk,
+    "elastic_net_cpu": ElasticNetSk,
     "support_vector": SVR
 }
 
@@ -43,24 +47,27 @@ def create_model(name, params=None):
     return MODEL_REGISTRY[name](**params)
 
 class ClassifierGuidedRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, classifier, regressor):
+    def __init__(self, classifier=None, regressor=None):
         self.classifier = classifier
         self.regressor = regressor
 
     def fit(self, X, y, sample_weight=None):
         given_labels = self._get_labels(y)
-        self.classifier.fit(X,given_labels)
+        self.classifier_ = clone(self.classifier)
+        self.regressor_ = clone(self.regressor)
+        self.classifier_.fit(X,given_labels)
         mask_1 = given_labels == 1
         X_1, y_1 = X[mask_1,:], y[mask_1]
-        self.regressor.fit(X_1, y_1)
+        self.regressor_.fit(X_1, y_1)
+        self.n_features_in_ = X.shape[1]
         return self
 
     def predict(self, X):
-        self.labels = self.classifier.predict(X)
+        self.labels = self.classifier_.predict(X)
         mask_1 = self.labels == 1
         X_1 = X[mask_1,:]
         y_pred = cp.zeros(X.shape[0])
-        y_pred[mask_1] = self.regressor.predict(X_1)
+        y_pred[mask_1] = self.regressor_.predict(X_1)
         return y_pred
 
     def _get_labels(self, y):

@@ -1,7 +1,0 @@
-{
-  "model_config__model_params__learning_rate": 0.001,
-  "model_config__model_params__num_attn_blocks": 2,
-  "selector_estimator_config__max_depth": 15,
-  "selector_estimator_config__max_features": 100,
-  "selector_config__threshold": "0.5*median"
-}

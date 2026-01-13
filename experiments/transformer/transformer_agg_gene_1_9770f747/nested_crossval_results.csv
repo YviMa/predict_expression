@@ -1,8 +1,0 @@
-	best_combo	RMSE	pearsonr
-0	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 2, 'selector_estimator_config__n_clusters': 600}	35.63078611344813	0.5661742601885916
-1	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 4, 'selector_estimator_config__n_clusters': 400}	58.13136727452005	0.2804513229248003
-2	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 4, 'selector_estimator_config__n_clusters': 400}	102.3328032375283	0.27897237470714376
-3	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 4, 'selector_estimator_config__n_clusters': 400}	335.1944919371749	0.05076793658343233
-4	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 4, 'selector_estimator_config__n_clusters': 400}	92.72943845470579	0.6823270899042398
-5	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 2, 'selector_estimator_config__n_clusters': 600}	3672.1371963555853	0.01654643669339683
-6	{'model_config__model_params__learning_rate': 0.001, 'model_config__model_params__num_heads': 4, 'selector_estimator_config__n_clusters': 400}	79.68446137610525	0.395387603817227

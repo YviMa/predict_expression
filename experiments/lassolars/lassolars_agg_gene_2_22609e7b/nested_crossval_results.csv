@@ -1,8 +1,0 @@
-	best_combo	RMSE	pearsonr
-0	{'regressor__regressor__alpha': 0.02, 'regressor__selector__estimator__n_clusters': 250}	5478.735806620467	0.20957304690421175
-1	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	0.06145778745369601	
-2	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	268.4793452291925	
-3	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	2.9115176683531954	
-4	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	120.60466061518703	
-5	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	176.29142080219415	
-6	{'regressor__regressor__alpha': 1, 'regressor__selector__estimator__n_clusters': 50}	0.06826200988765843	

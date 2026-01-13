@@ -1,6 +1,0 @@
-{
-  "regressor__regressor__kernel": "linear",
-  "regressor__regressor__C": 0.01,
-  "regressor__regressor__epsilon": 0.1,
-  "selector_estimator_config__n_clusters": 500
-}

@@ -1,5 +1,0 @@
-{
-  "model_config__model_params__learning_rate": 0.001,
-  "model_config__model_params__num_heads": 2,
-  "selector_estimator_config__n_clusters": 600
-}

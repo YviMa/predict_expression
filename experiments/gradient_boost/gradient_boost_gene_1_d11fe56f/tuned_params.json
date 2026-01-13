@@ -1,8 +1,0 @@
-{
-  "regressor__regressor__alpha": 0.9,
-  "regressor__regressor__learning_rate": 0.2,
-  "regressor__regressor__loss": "squared_error",
-  "regressor__regressor__max_depth": 2,
-  "regressor__regressor__n_estimators": 50,
-  "regressor__regressor__subsample": 0.8
-}

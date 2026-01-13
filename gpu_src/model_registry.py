@@ -9,7 +9,7 @@ from scipy.sparse import diags
 import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor, AdaBoostRegressor
 import xgboost as xgb
-from cuml.svm import SVR
+from cuml.svm import SVR, SVC
 from cuml.decomposition import PCA
 from sklearn.cluster import FeatureAgglomeration
 from cuml.cluster import AgglomerativeClustering
@@ -28,7 +28,8 @@ MODEL_REGISTRY = {
     "random_forest": RandomForestRegressor,
     "random_forest_cpu": RandomForestSk,
     "elastic_net_cpu": ElasticNetSk,
-    "support_vector": SVR
+    "support_vector": SVR,
+    "svc": SVC
 }
 
 def create_model(name, params=None):
@@ -37,7 +38,7 @@ def create_model(name, params=None):
     if params == None:
         params = {}
     if name == "hierarchical":
-        classifier_name = params["clasifier_name"]
+        classifier_name = params["classifier_name"]
         regressor_name = params["regressor_name"]
         classifier_params = params["classifier_params"]
         regressor_params = params["regressor_params"]

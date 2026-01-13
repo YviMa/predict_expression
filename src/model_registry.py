@@ -24,7 +24,8 @@ MODEL_REGISTRY = {
     "lasso_lars": LassoLars,
     "balanced_rf": BalancedRandomForestClassifier,
     "balanced_ada_boost": RUSBoostClassifier,
-    "svc": SVC
+    "svc": SVC,
+    "pca": PCA
 }
 
 def create_model(name, params=None):

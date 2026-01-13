@@ -8,7 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 from sklearn.metrics import mean_squared_error
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, randint, uniform, loguniform
 
 def load_config(path):
     with open(path, "r") as f:
@@ -147,3 +147,20 @@ def split_sk_params(params_grid):
             selector_estimator_params.update({subkeys[1]: params_grid[key]})
     
     return model_params, selector_params, selector_estimator_params
+
+def setup_param_dist(param_grid):
+    param_dist = {}
+
+    for key in param_grid.keys():
+        param = param_grid[key]
+        if param["type"] == "uniform":
+            dist = uniform(param["min"], param["max"])
+        elif param["type"]== "loguniform":
+            dist = loguniform(param["min"], param["max"])
+        elif param["type"]== "randint":
+            dist = randint(param["min"], param["max"]+1)
+        else:
+            raise ValueError("Not a valid distribution")
+        param_dist.update({key: dist})
+    
+    return param_dist

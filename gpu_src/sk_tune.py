@@ -61,6 +61,8 @@ exp_dir = set_up_experiment(config)
 # load data
 data_path = join(config['data']['data_dir'], config['data']['file_name'])
 X, y = load_data(data_path)
+X = X.astype('float32')
+y = y.astype('float32')
 
 # initialize scaler
 x_scalers = config['preprocessing']['x_scaling']
@@ -123,7 +125,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
             if config["preprocessing"]["y_scaling"][0] == "log2":
                 y_tune_gpu = log2p1(y_tune_gpu)
             
-            if config["preprocessing"]["y_scaling"][1] == "standard":
+            if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
                 mu = cp.asarray(y_tune_gpu.mean())
                 std = cp.asarray(y_tune_gpu.std(ddof=1))
                 y_tune_gpu = (y_tune_gpu - mu) / std
@@ -133,7 +135,7 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
             y_pred = cp.asarray(model.predict(X_val_gpu))
 
             # scale back to original scale for validation
-            if config["preprocessing"]["y_scaling"][1] == "standard":
+            if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
                 y_pred = y_pred*std + mu
             
             if config["preprocessing"]["y_scaling"][0] == "log2":
@@ -178,7 +180,8 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
     if config["preprocessing"]["y_scaling"][0] == "log2":
         y_train_gpu = log2p1(y_train_gpu)
             
-    if config["preprocessing"]["y_scaling"][1] == "standard":
+    if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
+
         mu = cp.asarray(y_train_gpu.mean())
         std = cp.asarray(y_train_gpu.std(ddof=1))
         y_train_gpu = (y_train_gpu - mu) / std
@@ -186,7 +189,8 @@ for idx, (outer_train_index, outer_test_index) in enumerate(outer_kf.split(X)):
     model.fit(X_train_gpu, y_train_gpu)
     y_pred = cp.asarray(model.predict(X_test_gpu))
 
-    if config["preprocessing"]["y_scaling"][1] == "standard":
+    if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
+
         y_pred = y_pred*std + mu
     
     if config["preprocessing"]["y_scaling"][0] == "log2":
@@ -243,7 +247,8 @@ for combo in param_combinations:
         if config["preprocessing"]["y_scaling"][0] == "log2":
             y_tune_gpu = log2p1(y_tune_gpu)
         
-        if config["preprocessing"]["y_scaling"][1] == "standard":
+        if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
+
             mu = cp.asarray(y_tune_gpu.mean())
             std = cp.asarray(y_tune_gpu.std(ddof=1))
             y_tune_gpu = (y_tune_gpu - mu) / std
@@ -253,7 +258,8 @@ for combo in param_combinations:
         y_pred = cp.asarray(model.predict(X_val_gpu))
 
         # scale back to original scale for validation
-        if config["preprocessing"]["y_scaling"][1] == "standard":
+        if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
+
             y_pred = y_pred*std + mu
         
         if config["preprocessing"]["y_scaling"][0] == "log2":
@@ -289,7 +295,8 @@ y_full_gpu = cp.array(y)
 y_mu, y_std = 0, 1
 if config["preprocessing"]["y_scaling"][0] == "log2":
     y_full_gpu = cp.log2(y_full_gpu + 1)
-if config["preprocessing"]["y_scaling"][1] == "standard":
+if len(config["preprocessing"]["y_scaling"])>1 and config["preprocessing"]["y_scaling"][1] == "standard":
+
     y_mu = cp.asarray(y_full_gpu.mean())
     y_std = cp.asarray(y_full_gpu.std(ddof=1) + 1e-10)
     y_full_gpu = (y_full_gpu - y_mu) / y_std

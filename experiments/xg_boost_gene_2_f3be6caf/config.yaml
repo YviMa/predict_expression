@@ -1,0 +1,56 @@
+data:
+  data_dir: data/raw
+  file_name: gene_2.txt
+estimator:
+  est_params:
+    device: cuda
+    tree_method: hist
+  name: xg_boost
+experiment:
+  description: XG Boost with elasticnet for feature selection.
+  name: xg_boost_gene_2
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 5
+    param_grid:
+      model_config__colsample_bytree:
+        max: 1.0
+        min: 0.6
+        type: uniform
+      model_config__gamma:
+        max: 5
+        min: 0.1
+        type: uniform
+      model_config__min_child_weight:
+        max: 10
+        min: 1
+        type: uniform
+      model_config_learning_rate:
+        max: 0.2
+        min: 0.01
+        type: loguniform
+      model_config_n_estimators:
+        max: 400
+        min: 50
+        type: randint
+      model_conifg__max_depth:
+        max: 10
+        min: 2
+        type: randint
+      reg_lambda:
+        max: 10
+        min: 0.0001
+        type: loguniform
+    scoring: neg_mean_squared_error

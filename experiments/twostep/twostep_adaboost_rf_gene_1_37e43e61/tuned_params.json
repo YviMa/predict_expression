@@ -1,6 +1,0 @@
-{
-  "regressor__regressor__classifier__learning_rate": 0.2,
-  "regressor__regressor__classifier__n_estimators": 150,
-  "regressor__regressor__regressor__max_depth": 17,
-  "regressor__regressor__regressor__max_features": 200
-}

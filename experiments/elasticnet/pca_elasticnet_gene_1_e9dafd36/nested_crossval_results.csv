@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__alpha': 0.01, 'regressor__regressor__l1_ratio': 0.1, 'regressor__selector__estimator__n_components': 80}	65.08224981064957	0.5550774579608952
+1	{'regressor__regressor__alpha': 0.1, 'regressor__regressor__l1_ratio': 0.5, 'regressor__selector__estimator__n_components': 100}	29.510079830395767	0.43657571035026116
+2	{'regressor__regressor__alpha': 0.01, 'regressor__regressor__l1_ratio': 0.5, 'regressor__selector__estimator__n_components': 150}	3689.082093275948	0.024442500250796768
+3	{'regressor__regressor__alpha': 0.01, 'regressor__regressor__l1_ratio': 0.5, 'regressor__selector__estimator__n_components': 50}	39.199068489755426	0.5771646065497285
+4	{'regressor__regressor__alpha': 1.0, 'regressor__regressor__l1_ratio': 0.5, 'regressor__selector__estimator__n_components': 20}	30.54086388133916	0.2872743879098835
+5	{'regressor__regressor__alpha': 0.01, 'regressor__regressor__l1_ratio': 0.1, 'regressor__selector__estimator__n_components': 80}	111.16566396947428	0.29068906234581093
+6	{'regressor__regressor__alpha': 0.01, 'regressor__regressor__l1_ratio': 0.5, 'regressor__selector__estimator__n_components': 80}	29.88746246244917	0.6851336327609572

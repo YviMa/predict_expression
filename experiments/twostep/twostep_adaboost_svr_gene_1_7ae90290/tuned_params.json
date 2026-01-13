@@ -1,8 +1,0 @@
-{
-  "regressor__regressor__classifier__learning_rate": 0.5,
-  "regressor__regressor__classifier__n_estimators": 100,
-  "regressor__regressor__regressor__C": 0.5,
-  "regressor__regressor__regressor__epsilon": 10,
-  "regressor__regressor__regressor__gamma": 0.002,
-  "regressor__regressor__regressor__kernel": "sigmoid"
-}

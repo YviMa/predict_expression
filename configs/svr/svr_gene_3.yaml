@@ -1,0 +1,43 @@
+experiment: 
+  name: svr_gene_3
+  description: "Support vector regression."
+
+data: 
+  file_name: gene_3.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: support_vector
+  est_params: {'degree': 2}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {'regressor__regressor__kernel': ["poly", "rbf", "sigmoid"],
+    'regressor__regressor__gamma': ["scale", 0.002, 0.01],
+    'regressor__regressor__C': [0.005, 0.01, 0.1, 0.5, 1.0],
+    'regressor__regressor__epsilon': [0.1, 0.5, 1.0, 10, 100]
+    }
+    cv: 5
+    scoring: "neg_mean_squared_error"
+
+
+evaluation:
+  plot: true
+  test_size: 0.3
+  n_splits: 5
+  random_state: 7
+  estimator: elastic_net
+  eval_config: {}

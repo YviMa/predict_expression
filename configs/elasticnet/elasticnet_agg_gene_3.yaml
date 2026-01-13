@@ -1,0 +1,38 @@
+experiment: 
+  name: elasticnet_agg_gene_3
+  description: "Elasticnet with feature agglomeration as feature extraction method with ward algorithm."
+
+data: 
+  file_name: gene_3.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: true
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: feature_agg 
+    params: {}
+
+estimator:
+  name: elastic_net
+  est_params: {'max_iter': 10000, 'tol': 0.01}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {
+    'model_config__alpha': [0.001, 0.01, 0.1, 0.2, 0.3],
+    'model_config_l1_ratio': [0.01, 0.1, 0.5, 0.7, 0.8, 0.9],
+    'selector_estimator_config__n_clusters': [500, 700, 1000]}
+    cv: 5 # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+    scoring: "neg_mean_squared_error" # WARNING: these settings are fixed in the GPU code and must be changed in the script itself

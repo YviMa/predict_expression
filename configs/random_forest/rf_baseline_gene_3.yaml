@@ -1,0 +1,34 @@
+experiment: 
+  name: rf_baseline_gene_3
+  description: "Random Forest baseline without feature selection."
+
+data: 
+  file_name: gene_3.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: false
+
+estimator:
+  name: random_forest
+  est_params: {}
+
+tuning:
+  tuning_config:
+    param_grid:
+      regressor__regressor__n_estimators: [300, 500]
+      regressor__regressor__max_depth: [null, 20]
+      regressor__regressor__min_samples_leaf: [1, 5]
+      regressor__regressor__max_features: ["sqrt", 0.33]
+    cv: 5
+    scoring: "neg_mean_squared_error"

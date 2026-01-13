@@ -1,6 +1,0 @@
-{
-  "model_config__min_child_weight": 1,
-  "model_config__max_depth": 4,
-  "model_config__subsample": 1,
-  "model_config__gamma": 1
-}

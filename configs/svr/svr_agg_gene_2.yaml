@@ -1,0 +1,48 @@
+experiment: 
+  name: svr/svr_agg_gene_2
+  description: "SVR with feature agglomeration as feature extraction method with ward algorithm."
+
+data: 
+  file_name: gene_2.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: true
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: feature_agg 
+    params: {}
+
+estimator:
+  name: support_vector
+  est_params: {gamma: "scale"}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_grid: {'regressor__regressor__kernel': ["rbf", "sigmoid"],
+    'regressor__regressor__C': [0.005, 0.01, 0.1, 0.5],
+    'regressor__regressor__epsilon': [0.01, 0.1, 0.5, 1.0],
+    'selector_estimator_config__n_clusters': [50, 100, 200]
+    }
+    cv: 5 # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+    scoring: "neg_mean_squared_error" # WARNING: these settings are fixed in the GPU code and must be changed in the script itself
+
+
+evaluation:
+  plot: true
+  test_size: 0.3
+  n_splits: 5
+  random_state: 7
+  estimator: elastic_net
+  eval_config: {}

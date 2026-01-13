@@ -1,0 +1,46 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    classifier_name: svc
+    classifier_params: {}
+    regressor_name: random_forest
+    regressor_params:
+      n_bins: 32
+      n_estimators: 500
+  name: hierarchical
+experiment:
+  description: Two step model using svc for class. and RF for regression.
+  name: twostep/twostep_svc_rf_gene_3
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    cv: 5
+    param_grid:
+      regressor__regressor__classifier__C:
+      - 1
+      - 5
+      - 10
+      - 15
+      - 20
+      regressor__regressor__regressor__max_depth:
+      - 15
+      - 20
+      - 25
+      regressor__regressor__regressor__max_features:
+      - 400
+      - 600
+      - 800
+      - 1000
+    scoring: neg_mean_squared_error

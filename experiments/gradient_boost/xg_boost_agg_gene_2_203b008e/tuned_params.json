@@ -1,7 +1,0 @@
-{
-  "model_config__min_child_weight": 1,
-  "model_config__max_depth": 6,
-  "model_config__subsample": 1,
-  "model_config__gamma": 1,
-  "selector_estimator_config__n_clusters": 200
-}

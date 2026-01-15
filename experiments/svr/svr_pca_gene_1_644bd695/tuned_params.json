@@ -1,0 +1,7 @@
+{
+  "regressor__regressor__C": 4.469847883983047,
+  "regressor__regressor__epsilon": 0.09712300999955198,
+  "regressor__regressor__gamma": 0.002315624614487702,
+  "regressor__regressor__kernel": "rbf",
+  "regressor__selector__estimator__n_components": 89
+}

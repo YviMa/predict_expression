@@ -1,0 +1,5 @@
+{
+  "regressor__regressor__alpha": 0.7514202690495059,
+  "regressor__regressor__l1_ratio": 0.6644073163425982,
+  "regressor__selector__estimator__n_components": 103
+}

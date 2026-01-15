@@ -1,0 +1,38 @@
+data:
+  data_dir: data/raw
+  file_name: gene_2.txt
+estimator:
+  est_params:
+    n_estimators: 100
+  name: random_forest
+experiment:
+  description: Random forest without feature selection.
+  name: rf_gene_2
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__max_depth:
+        max: 15
+        min: 3
+        type: randint
+      regressor__regressor__max_features:
+        max: 0.5
+        min: 0.1
+        type: loguniform
+      regressor__regressor__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+    scoring: neg_root_mean_squared_error

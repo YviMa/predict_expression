@@ -1,0 +1,5 @@
+{
+  "regressor__regressor__max_depth": 6,
+  "regressor__regressor__max_features": 0.16475058113465266,
+  "regressor__regressor__min_samples_leaf": 2
+}

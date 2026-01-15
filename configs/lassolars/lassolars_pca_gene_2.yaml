@@ -1,0 +1,43 @@
+experiment: 
+  name: lassolars_pca_gene_2
+  description: "PCA for feature extraction + LassoLARS."
+
+data: 
+  file_name: gene_2.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: true 
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: pca 
+    params: {} 
+
+estimator:
+  name: lasso_lars
+  est_params: {'max_iter': 5000}
+
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    param_distributions: 
+      regressor__regressor__alpha: 
+        type: "loguniform"
+        min: 0.001 
+        max: 30
+      regressor__selector__estimator__n_components:
+        type: randint
+        min: 10
+        max: 200
+    n_iter: 200
+    scoring: "neg_root_mean_squared_error"

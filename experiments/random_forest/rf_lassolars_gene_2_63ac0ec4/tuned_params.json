@@ -1,0 +1,7 @@
+{
+  "regressor__regressor__max_depth": 11,
+  "regressor__regressor__max_features": 0.12378020257583978,
+  "regressor__regressor__min_samples_leaf": 3,
+  "regressor__selector__estimator__alpha": 0.03988869153896019,
+  "regressor__selector__threshold": "mean"
+}

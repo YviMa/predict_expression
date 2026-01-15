@@ -1,0 +1,68 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    device: cuda
+    tree_method: hist
+  name: xg_boost
+experiment:
+  description: XGBoost with proper regularization+feature agg.
+  name: xgboost_reg_agg_gene_1
+feature_selection:
+  apply: true
+  estimator_config:
+    name: feature_agg
+    params: {}
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 200
+    param_grid:
+      model_config__colsample_bytree:
+        max: 0.4
+        min: 0.6
+        type: uniform
+      model_config__gamma:
+        max: 4.9
+        min: 0.1
+        type: uniform
+      model_config__learning_rate:
+        max: 0.2
+        min: 0.01
+        type: loguniform
+      model_config__min_child_weight:
+        max: 9
+        min: 1
+        type: uniform
+      model_config__n_estimators:
+        max: 400
+        min: 100
+        type: randint
+      model_config__reg_alpha:
+        max: 50
+        min: 0.01
+        type: loguniform
+      model_config__reg_lambda:
+        max: 50
+        min: 0.01
+        type: loguniform
+      model_conifg__max_depth:
+        max: 10
+        min: 2
+        type: randint
+      selector_estimator_config__n_clusters:
+        max: 800
+        min: 300
+        type: randint
+    scoring: neg_root_mean_squared_error

@@ -1,0 +1,33 @@
+experiment: 
+  name: lassolars_gene_2
+  description: "Controlled experiment using elastic net for establishing minimum performance."
+
+data: 
+  file_name: gene_2.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: lasso_lars
+  est_params: {'max_iter': 5000}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_distributions: 
+      regressor__regressor__alpha: 
+        type: "loguniform"
+        min: 0.001 
+        max: 30
+    n_iter: 200
+    scoring: "neg_root_mean_squared_error"

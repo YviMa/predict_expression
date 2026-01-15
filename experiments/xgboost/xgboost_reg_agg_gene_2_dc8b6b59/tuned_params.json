@@ -1,0 +1,11 @@
+{
+  "model_config__colsample_bytree": 0.8153703354357289,
+  "model_config__gamma": 2.7362793095570814,
+  "model_config__learning_rate": 0.046326302324657086,
+  "model_config__min_child_weight": 3.1796730124688395,
+  "model_config__n_estimators": 168,
+  "model_config__reg_alpha": 1.7082391759613156,
+  "model_config__reg_lambda": 0.1158109381585191,
+  "model_conifg__max_depth": 8,
+  "selector_estimator_config__n_clusters": 238
+}

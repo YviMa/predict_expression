@@ -1,5 +1,5 @@
 experiment: 
-  name: elasticnet_random_search_gene_1
+  name: lassolars_gene_1
   description: "Controlled experiment using elastic net for establishing minimum performance."
 
 data: 
@@ -18,22 +18,16 @@ feature_selection:
   apply: false 
 
 estimator:
-  name: elastic_net
-  est_params: {'max_iter': 10000, 'tol': 0.01}
+  name: lasso_lars
+  est_params: {'max_iter': 5000}
 
 tuning:
   tune: true
-  tuner: gridsearch_cv
   tuning_config:
     param_distributions: 
       regressor__regressor__alpha: 
         type: "loguniform"
-        min: 0.001
-        max: 0.9
-      regressor__regressor__l1_ratio:
-        type: "loguniform"
-        min: 0.001
-        max: 0.9
-    cv: 5
-    n_iter: 100
-    scoring: "neg_mean_squared_error"
+        min: 0.001 
+        max: 30
+    n_iter: 200
+    scoring: "neg_root_mean_squared_error"

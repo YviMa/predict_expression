@@ -1,0 +1,38 @@
+experiment: 
+  name: xgboost_elnet_test
+  description: "XGBoost with proper regularization+elastic net."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: true 
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+  estimator_config: 
+    name: elastic_net_cpu
+    params: {"max_iter": 10000, "tol": 0.01}
+estimator:
+  name: xg_boost
+  est_params: {tree_method: "hist", device: "cuda"}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_grid: 
+      model_config__learning_rate:
+        type: loguniform
+        min: 0.01
+        max: 0.3
+    n_iter: 2
+    scoring: "neg_root_mean_squared_error" 

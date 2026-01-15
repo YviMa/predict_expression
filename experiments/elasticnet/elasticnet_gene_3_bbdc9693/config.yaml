@@ -1,0 +1,36 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    max_iter: 10000
+    tol: 0.01
+  name: elastic_net
+experiment:
+  description: Controlled experiment using elastic net for establishing minimum performance.
+  name: elasticnet_gene_3
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuner: gridsearch_cv
+  tuning_config:
+    n_iter: 120
+    param_distributions:
+      regressor__regressor__alpha:
+        max: 0.9
+        min: 0.001
+        type: loguniform
+      regressor__regressor__l1_ratio:
+        max: 0.9
+        min: 0.001
+        type: loguniform
+    scoring: neg_root_mean_squared_error

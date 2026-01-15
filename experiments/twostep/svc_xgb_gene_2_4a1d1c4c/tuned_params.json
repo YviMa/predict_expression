@@ -1,0 +1,13 @@
+{
+  "regressor__regressor__classifier__C": 4.529320389122331,
+  "regressor__regressor__classifier__gamma": 0.031241032773843325,
+  "regressor__regressor__classifier__kernel": "poly",
+  "regressor__regressor__regressor__colsample_bytree": 0.6894555039783923,
+  "regressor__regressor__regressor__gamma": 2.917130032590287,
+  "regressor__regressor__regressor__learning_rate": 0.16511864237053397,
+  "regressor__regressor__regressor__max_depth": 6,
+  "regressor__regressor__regressor__min_child_weight": 3.1987134880823724,
+  "regressor__regressor__regressor__n_estimators": 381,
+  "regressor__regressor__regressor__reg_alpha": 0.05825519266557118,
+  "regressor__regressor__regressor__reg_lambda": 0.004477101795932162
+}

@@ -1,0 +1,77 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    classifier_name: svc
+    classifier_params:
+      class_weight: balanced
+    regressor_name: xg_boost
+    regressor_params:
+      device: cpu
+      n_jobs: 1
+      tree_method: hist
+  name: hierarchical
+experiment:
+  description: Two step model using svc for class. and XGBoost for regression.
+  name: twostep/svc_xgb_gene_1
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__classifier__C:
+        max: 10
+        min: 0.1
+        type: loguniform
+      regressor__regressor__classifier__gamma:
+        max: 10
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__classifier__kernel:
+        list:
+        - rbf
+        - poly
+        type: categorical
+      regressor__regressor__regressor__colsample_bytree:
+        max: 0.4
+        min: 0.6
+        type: uniform
+      regressor__regressor__regressor__gamma:
+        max: 4.9
+        min: 0.1
+        type: uniform
+      regressor__regressor__regressor__learning_rate:
+        max: 0.2
+        min: 0.01
+        type: loguniform
+      regressor__regressor__regressor__max_depth:
+        max: 10
+        min: 2
+        type: randint
+      regressor__regressor__regressor__min_child_weight:
+        max: 9
+        min: 1
+        type: uniform
+      regressor__regressor__regressor__n_estimators:
+        max: 400
+        min: 50
+        type: randint
+      regressor__regressor__regressor__reg_alpha:
+        max: 50
+        min: 0.01
+        type: loguniform
+      regressor__regressor__regressor__reg_lambda:
+        max: 1
+        min: 0.0001
+        type: loguniform
+    scoring: neg_root_mean_squared_error

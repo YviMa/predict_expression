@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__C': 0.8150229285482278, 'regressor__regressor__epsilon': 0.017062829878430167, 'regressor__regressor__gamma': 0.0020861916134275686, 'regressor__regressor__kernel': 'poly'}	349713513109.7911	0.20957138778447218
+1	{'regressor__regressor__C': 8.64622240151164, 'regressor__regressor__epsilon': 0.041789825813060746, 'regressor__regressor__gamma': 0.0006312004607620755, 'regressor__regressor__kernel': 'rbf'}	0.07440527477396733	0.25013625127855016
+2	{'regressor__regressor__C': 8.64622240151164, 'regressor__regressor__epsilon': 0.041789825813060746, 'regressor__regressor__gamma': 0.0006312004607620755, 'regressor__regressor__kernel': 'rbf'}	267.8282757716862	0.9947845407901817
+3	{'regressor__regressor__C': 8.64622240151164, 'regressor__regressor__epsilon': 0.041789825813060746, 'regressor__regressor__gamma': 0.0006312004607620755, 'regressor__regressor__kernel': 'rbf'}	2.8820121916217083	0.34504068047442826
+4	{'regressor__regressor__C': 0.21040264686949753, 'regressor__regressor__epsilon': 0.09762802982321667, 'regressor__regressor__gamma': 0.0011012202750079175, 'regressor__regressor__kernel': 'poly'}	120.46585422344415	0.9992830394269363
+5	{'regressor__regressor__C': 8.64622240151164, 'regressor__regressor__epsilon': 0.041789825813060746, 'regressor__regressor__gamma': 0.0006312004607620755, 'regressor__regressor__kernel': 'rbf'}	175.50722994048613	0.9967343491604473
+6	{'regressor__regressor__C': 8.64622240151164, 'regressor__regressor__epsilon': 0.041789825813060746, 'regressor__regressor__gamma': 0.0006312004607620755, 'regressor__regressor__kernel': 'rbf'}	0.08432351755297707	0.009731706481587311

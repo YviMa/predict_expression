@@ -1,0 +1,8 @@
+{
+  "regressor__regressor__classifier__C": 4.538437823448571,
+  "regressor__regressor__classifier__gamma": 5.11736436950569,
+  "regressor__regressor__classifier__kernel": "poly",
+  "regressor__regressor__regressor__max_depth": 16,
+  "regressor__regressor__regressor__max_features": 0.16999285756661858,
+  "regressor__regressor__regressor__min_samples_leaf": 2
+}

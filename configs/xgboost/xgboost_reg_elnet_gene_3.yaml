@@ -1,0 +1,82 @@
+experiment: 
+  name: xgboost_reg_elnet_gene_3
+  description: "XGBoost with proper regularization+elastic net."
+
+data: 
+  file_name: gene_3.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: true 
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+  estimator_config: 
+    name: elastic_net_cpu
+    params: {"max_iter": 10000, "tol": 0.01}
+
+estimator:
+  name: xg_boost
+  est_params: {tree_method: "hist", device: "cuda"}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_grid: 
+      model_config__learning_rate:
+        type: loguniform
+        min: 0.01
+        max: 0.3
+      model_config__n_estimators:
+        type: randint
+        min: 100
+        max: 400
+      model_conifg__max_depth:
+        type: randint
+        min: 2
+        max: 10
+      model_config__min_child_weight:
+        type: uniform
+        min: 1
+        max: 9
+      model_config__gamma:
+        type: uniform
+        min: 0.1
+        max: 4.9
+      model_config__colsample_bytree:
+        type: uniform
+        min: 0.6
+        max: 0.4 # min+max must be the upper bound
+      model_config__reg_lambda:
+        type: loguniform
+        min: 0.01
+        max: 50
+      model_config__reg_alpha:
+        type: loguniform
+        min: 0.01
+        max: 50
+      selector_estimator_config__alpha:
+        max: 0.7
+        min: 0.2
+        type: loguniform
+      selector_estimator_config__l1_ratio:
+        max: 0.2
+        min: 0.001
+        type: loguniform
+      selector_config__threshold:
+        type: categorical
+        list: ["mean", 
+        "median", 
+        "0.5*mean",
+         "0.5*median",
+          "1.5*mean", 
+          "1.5*median"]
+    n_iter: 150
+    scoring: "neg_root_mean_squared_error" 

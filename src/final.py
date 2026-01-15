@@ -1,6 +1,6 @@
 """
 Script to load trained models per gene and make predictions on test data.
-Output is saved as TSV files: pred_gene1.tsv, pred_gene2.tsv, pred_gene3.tsv
+Output is saved as TSV files: pred_gene_1.tsv, pred_gene_2.tsv, pred_gene_3.tsv
 DISCLAIMER: Please change the paths to filenames and/or filenames if necessary!
 """
 

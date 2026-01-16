@@ -1,0 +1,7 @@
+{
+  "regressor__regressor__classifier__C": 6.031653363760778,
+  "regressor__regressor__classifier__gamma": 0.0010412236544878684,
+  "regressor__regressor__classifier__kernel": "rbf",
+  "regressor__regressor__regressor__alpha": 0.44170327203161774,
+  "regressor__regressor__regressor__l1_ratio": 0.001476185381282268
+}

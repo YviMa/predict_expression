@@ -1,0 +1,59 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    classifier_name: balanced_rf
+    classifier_params:
+      n_estimators: 300
+    regressor_name: svr
+    regressor_params:
+      max_iter: 5000
+  name: hierarchical
+experiment:
+  description: Two step model using RF for classification and svr for regression.
+  name: twostep/rf_svr_gene_3
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__classifier__max_depth:
+        max: 20
+        min: 3
+        type: randint
+      regressor__regressor__classifier__max_features:
+        max: 1
+        min: 0.1
+        type: loguniform
+      regressor__regressor__classifier__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+      regressor__regressor__regressor__C:
+        max: 10
+        min: 0.1
+        type: loguniform
+      regressor__regressor__regressor__epsilon:
+        max: 10
+        min: 0.001
+        type: loguniform
+      regressor__regressor__regressor__gamma:
+        max: 10
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__regressor__kernel:
+        list:
+        - rbf
+        - poly
+        type: categorical
+    scoring: neg_root_mean_squared_error

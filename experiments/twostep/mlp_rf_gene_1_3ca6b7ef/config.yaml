@@ -1,0 +1,75 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    classifier_name: mlp_classifier
+    classifier_params:
+      early_stopping: true
+      solver: sgd
+      tol: 0.01
+    regressor_name: random_forest
+    regressor_params:
+      n_estimators: 300
+  name: hierarchical
+experiment:
+  description: Two step model using mlp for class. and RF for regression.
+  name: twostep/mlp_rf_gene_1
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 100
+    param_distributions:
+      regressor__regressor__classifier__activation:
+        list:
+        - relu
+        - tanh
+        type: categorical
+      regressor__regressor__classifier__alpha:
+        max: 0.1
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__classifier__hidden_layer_sizes:
+        max: 120
+        min: 20
+        type: randint
+      regressor__regressor__classifier__learning_rate:
+        list:
+        - constant
+        - invscaling
+        - adaptive
+        type: categorical
+      regressor__regressor__classifier__learning_rate_init:
+        max: 0.01
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__classifier__momentum:
+        max: 0.45
+        min: 0.5
+        type: uniform
+      regressor__regressor__classifier__power_t:
+        max: 0.7
+        min: 0.1
+        type: uniform
+      regressor__regressor__regressor__max_depth:
+        max: 20
+        min: 3
+        type: randint
+      regressor__regressor__regressor__max_features:
+        max: 1
+        min: 0.1
+        type: loguniform
+      regressor__regressor__regressor__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+    scoring: neg_root_mean_squared_error

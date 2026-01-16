@@ -1,0 +1,73 @@
+experiment: 
+  name: mlp_lassolars_gene_1
+  description: "MLP with lassolars as feature selection."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: true 
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+  estimator_config: 
+    name: lasso_lars
+    params: {"max_iter": 5000}
+
+estimator:
+  name: mlp_regressor
+  est_params: {"early_stopping": true, "solver": "sgd", "tol": 0.01}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_distributions: 
+      regressor__regressor__hidden_layer_sizes:
+        type: randint
+        min: 20
+        max: 120
+      regressor__regressor__activation:
+        type: categorical
+        list: ["relu", "tanh"]
+      regressor__regressor__alpha:
+        type: loguniform
+        min: 0.0001
+        max: 0.1
+      regressor__regressor__learning_rate:
+        type: categorical
+        list: ["constant", "invscaling", "adaptive"]
+      regressor__regressor__learning_rate_init:
+        type: loguniform
+        min: 0.0001
+        max: 0.01
+      regressor__regressor__power_t:
+        type: uniform
+        min: 0.1
+        max: 0.7
+      regressor__regressor__momentum:
+        type: uniform
+        min: 0.5
+        max: 0.45
+      regressor__selector__estimator__alpha:
+        max: 0.30
+        min: 0.001
+        type: loguniform
+      regressor__selector__threshold:
+        type: categorical
+        list: ["mean", 
+        "median", 
+        "0.5*mean",
+         "0.5*median",
+          "1.5*mean", 
+          "1.5*median"]
+    n_iter: 60
+    scoring: "neg_root_mean_squared_error" 

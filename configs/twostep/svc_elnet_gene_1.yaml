@@ -1,0 +1,51 @@
+experiment: 
+  name: twostep/svc_elnet_gene_1
+  description: "Two step model using svc for class. and RF for regression."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+  x_scaler_params: {}
+  y_scaler_params: {}
+feature_selection:
+  apply: false 
+
+estimator:
+  name: hierarchical
+  est_params: 
+    classifier_name : svc
+    classifier_params: {"class_weight": "balanced"}
+    regressor_name: elastic_net
+    regressor_params: {"max_iter": 10000,"tol": 0.01}
+tuning:
+  tune: true
+  tuning_config:
+    param_distributions:  
+      regressor__regressor__classifier__C:
+        type: loguniform
+        min: 0.1
+        max: 10
+      regressor__regressor__classifier__kernel: 
+        type: categorical
+        list: ['rbf', 'poly']
+      regressor__regressor__classifier__gamma: 
+        type: loguniform
+        min: 0.0001
+        max: 10
+      regressor__regressor__regressor__alpha: 
+        type: "loguniform"
+        min: 0.001
+        max: 0.9
+      regressor__regressor__regressor__l1_ratio:
+        type: "loguniform"
+        min: 0.001
+        max: 0.9 
+
+    n_iter: 60
+    scoring: "neg_root_mean_squared_error"

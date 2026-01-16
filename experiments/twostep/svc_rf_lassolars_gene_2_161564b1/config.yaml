@@ -1,0 +1,75 @@
+data:
+  data_dir: data/raw
+  file_name: gene_2.txt
+estimator:
+  est_params:
+    classifier_name: svc
+    classifier_params:
+      class_weight: balanced
+    regressor_name: random_forest
+    regressor_params:
+      n_estimators: 300
+  name: hierarchical
+experiment:
+  description: Two step model using svc for class. and RF for regression + lassolars
+    for feature selection.
+  name: twostep/svc_rf_lassolars_gene_2
+feature_selection:
+  apply: true
+  estimator_config:
+    name: lasso_lars
+    params:
+      max_iter: 5000
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__classifier__C:
+        max: 10
+        min: 0.1
+        type: loguniform
+      regressor__regressor__classifier__gamma:
+        max: 10
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__classifier__kernel:
+        list:
+        - rbf
+        - poly
+        type: categorical
+      regressor__regressor__regressor__max_depth:
+        max: 20
+        min: 3
+        type: randint
+      regressor__regressor__regressor__max_features:
+        max: 1
+        min: 0.1
+        type: loguniform
+      regressor__regressor__regressor__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+      regressor__selector__estimator__alpha:
+        max: 0.3
+        min: 0.001
+        type: loguniform
+      regressor__selector__threshold:
+        list:
+        - mean
+        - median
+        - 0.5*mean
+        - 0.5*median
+        - 1.5*mean
+        - 1.5*median
+        type: categorical
+    scoring: neg_root_mean_squared_error

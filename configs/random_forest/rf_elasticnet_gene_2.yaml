@@ -17,10 +17,10 @@ preprocessing:
 
 feature_selection:
   apply: true 
-  selector_name: scikitlearn_transformation
+  selector_name: scikitlearn_estimator
   selector_params: {}
   estimator_config: 
-    name: elastic_net_cpu
+    name: elastic_net
     params: {"max_iter": 10000, "tol": 0.01}
 
 estimator:
@@ -51,7 +51,7 @@ tuning:
         max: 0.9
         min: 0.3
         type: loguniform  
-      selector__threshold:
+      regressor__selector__threshold:
         type: categorical
         list: ["mean", 
         "median", 

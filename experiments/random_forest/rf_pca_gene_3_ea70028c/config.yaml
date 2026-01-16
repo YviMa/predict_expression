@@ -1,0 +1,47 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    n_estimators: 100
+  name: random_forest
+experiment:
+  description: Random forest+PCA.
+  name: rf_pca_gene_3
+feature_selection:
+  apply: true
+  estimator_config:
+    name: pca
+    params: {}
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__max_depth:
+        max: 15
+        min: 3
+        type: randint
+      regressor__regressor__max_features:
+        max: 1
+        min: 0.1
+        type: loguniform
+      regressor__regressor__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+      regressor__selector__estimator__n_components:
+        max: 500
+        min: 100
+        type: randint
+    scoring: neg_root_mean_squared_error

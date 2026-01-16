@@ -1,0 +1,9 @@
+{
+  "regressor__regressor__activation": "relu",
+  "regressor__regressor__alpha": 0.04716232342647426,
+  "regressor__regressor__hidden_layer_sizes": 32,
+  "regressor__regressor__learning_rate": "constant",
+  "regressor__regressor__learning_rate_init": 0.0008779638605110252,
+  "regressor__regressor__momentum": 0.6528773391788751,
+  "regressor__regressor__power_t": 0.4251596233473076
+}

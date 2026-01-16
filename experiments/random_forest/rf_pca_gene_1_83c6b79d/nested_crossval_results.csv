@@ -1,0 +1,8 @@
+	best_combo	RMSE	pearsonr
+0	{'regressor__regressor__max_depth': 15, 'regressor__regressor__max_features': 0.8745995875304564, 'regressor__regressor__min_samples_leaf': 4, 'regressor__selector__estimator__n_components': 97}	42.222195851242404	0.7203817505651129
+1	{'regressor__regressor__max_depth': 15, 'regressor__regressor__max_features': 0.8745995875304564, 'regressor__regressor__min_samples_leaf': 4, 'regressor__selector__estimator__n_components': 97}	26.230725182802995	0.8843424947532007
+2	{'regressor__regressor__max_depth': 13, 'regressor__regressor__max_features': 0.3310409246532608, 'regressor__regressor__min_samples_leaf': 3, 'regressor__selector__estimator__n_components': 32}	3689.0678970772424	0.021626592108741953
+3	{'regressor__regressor__max_depth': 15, 'regressor__regressor__max_features': 0.8745995875304564, 'regressor__regressor__min_samples_leaf': 4, 'regressor__selector__estimator__n_components': 97}	13.857135329763834	0.45676571179219533
+4	{'regressor__regressor__max_depth': 12, 'regressor__regressor__max_features': 0.6056617559343601, 'regressor__regressor__min_samples_leaf': 3, 'regressor__selector__estimator__n_components': 115}	28.173002544571673	0.5115456381741674
+5	{'regressor__regressor__max_depth': 15, 'regressor__regressor__max_features': 0.8745995875304564, 'regressor__regressor__min_samples_leaf': 4, 'regressor__selector__estimator__n_components': 97}	112.2800193884852	0.1968070570634071
+6	{'regressor__regressor__max_depth': 12, 'regressor__regressor__max_features': 0.6049723328332037, 'regressor__regressor__min_samples_leaf': 4, 'regressor__selector__estimator__n_components': 130}	32.09017896122261	0.702268920539825

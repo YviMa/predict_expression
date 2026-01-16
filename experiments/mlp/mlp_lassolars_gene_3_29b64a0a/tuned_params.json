@@ -1,0 +1,11 @@
+{
+  "regressor__regressor__activation": "tanh",
+  "regressor__regressor__alpha": 0.00603826248810954,
+  "regressor__regressor__hidden_layer_sizes": 59,
+  "regressor__regressor__learning_rate": "adaptive",
+  "regressor__regressor__learning_rate_init": 0.009490053682737176,
+  "regressor__regressor__momentum": 0.8684352466804846,
+  "regressor__regressor__power_t": 0.545551639700767,
+  "regressor__selector__estimator__alpha": 0.07678903264233254,
+  "regressor__selector__threshold": "0.5*median"
+}

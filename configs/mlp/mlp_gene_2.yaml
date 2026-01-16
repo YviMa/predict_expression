@@ -1,0 +1,56 @@
+experiment: 
+  name: mlp_gene_2
+  description: "MLP without feature selection."
+
+data: 
+  file_name: gene_2.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: false
+
+estimator:
+  name: mlp_regressor
+  est_params: {"early_stopping": true, "solver": "sgd", "tol": 0.01}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_distributions: 
+      regressor__regressor__hidden_layer_sizes:
+        type: randint
+        min: 10
+        max: 80
+      regressor__regressor__activation:
+        type: categorical
+        list: ["relu", "tanh"]
+      regressor__regressor__alpha:
+        type: loguniform
+        min: 0.0001
+        max: 0.1
+      regressor__regressor__learning_rate:
+        type: categorical
+        list: ["constant", "invscaling", "adaptive"]
+      regressor__regressor__learning_rate_init:
+        type: loguniform
+        min: 0.0001
+        max: 0.01
+      regressor__regressor__power_t:
+        type: uniform
+        min: 0.1
+        max: 0.7
+      regressor__regressor__momentum:
+        type: uniform
+        min: 0.5
+        max: 0.45
+    n_iter: 60
+    scoring: "neg_root_mean_squared_error" 

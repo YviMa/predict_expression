@@ -1,0 +1,59 @@
+data:
+  data_dir: data/raw
+  file_name: gene_1.txt
+estimator:
+  est_params:
+    early_stopping: true
+    solver: sgd
+    tol: 0.01
+  name: mlp_regressor
+experiment:
+  description: MLP without feature selection.
+  name: mlp_gene_1
+feature_selection:
+  apply: false
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__activation:
+        list:
+        - relu
+        - tanh
+        type: categorical
+      regressor__regressor__alpha:
+        max: 0.1
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__hidden_layer_sizes:
+        max: 120
+        min: 20
+        type: randint
+      regressor__regressor__learning_rate:
+        list:
+        - constant
+        - invscaling
+        - adaptive
+        type: categorical
+      regressor__regressor__learning_rate_init:
+        max: 0.01
+        min: 0.0001
+        type: loguniform
+      regressor__regressor__momentum:
+        max: 0.45
+        min: 0.5
+        type: uniform
+      regressor__regressor__power_t:
+        max: 0.7
+        min: 0.1
+        type: uniform
+    scoring: neg_root_mean_squared_error

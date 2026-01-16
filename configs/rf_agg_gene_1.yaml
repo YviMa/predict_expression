@@ -1,0 +1,52 @@
+experiment: 
+  name: rf_agg_gene_1
+  description: "Random forest without feature selection."
+
+data: 
+  file_name: gene_1.txt
+  data_dir: data/raw
+
+preprocessing:
+  x_scaling: 
+    - standard
+  y_scaling:
+    - log2
+    - standard
+  x_scaler_params: {}
+  y_scaler_params: {}
+
+feature_selection:
+  apply: true 
+  selector_name: scikitlearn_transformation
+  selector_params: {}
+  estimator_config: 
+    name: feature_agg 
+    params: {}
+
+estimator:
+  name: random_forest
+  est_params: {"n_estimators": 100}
+
+tuning:
+  tune: true
+  tuning_config:
+    param_distributions: 
+      regressor__regressor__max_depth:
+        type: randint
+        min: 3
+        max: 15
+      regressor__regressor__min_samples_leaf:
+        type: randint
+        min: 1
+        max: 20
+      regressor__regressor__max_features:
+        type: loguniform
+        min: 0.1
+        max: 1
+      regressor__selector__estimator__n_clusters:
+        type: randint
+        min: 300
+        max: 800
+      
+    n_iter: 60
+    scoring: "neg_root_mean_squared_error" 

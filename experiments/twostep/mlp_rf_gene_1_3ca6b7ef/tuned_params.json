@@ -1,0 +1,12 @@
+{
+  "regressor__regressor__classifier__activation": "relu",
+  "regressor__regressor__classifier__alpha": 0.014752789553537983,
+  "regressor__regressor__classifier__hidden_layer_sizes": 51,
+  "regressor__regressor__classifier__learning_rate": "adaptive",
+  "regressor__regressor__classifier__learning_rate_init": 0.0026992899385840105,
+  "regressor__regressor__classifier__momentum": 0.8745532343450104,
+  "regressor__regressor__classifier__power_t": 0.741252057044649,
+  "regressor__regressor__regressor__max_depth": 3,
+  "regressor__regressor__regressor__max_features": 0.6490868833233737,
+  "regressor__regressor__regressor__min_samples_leaf": 4
+}

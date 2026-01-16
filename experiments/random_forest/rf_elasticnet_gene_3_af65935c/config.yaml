@@ -1,0 +1,62 @@
+data:
+  data_dir: data/raw
+  file_name: gene_3.txt
+estimator:
+  est_params:
+    n_estimators: 100
+  name: random_forest
+experiment:
+  description: Random forest with elasticnet as feature selection.
+  name: rf_elasticnet_gene_3
+feature_selection:
+  apply: true
+  estimator_config:
+    name: elastic_net
+    params:
+      max_iter: 10000
+      tol: 0.01
+  selector_name: scikitlearn_estimator
+  selector_params: {}
+preprocessing:
+  x_scaler_params: {}
+  x_scaling:
+  - standard
+  y_scaler_params: {}
+  y_scaling:
+  - log2
+  - standard
+tuning:
+  tune: true
+  tuning_config:
+    n_iter: 60
+    param_distributions:
+      regressor__regressor__max_depth:
+        max: 15
+        min: 3
+        type: randint
+      regressor__regressor__max_features:
+        max: 0.5
+        min: 0.1
+        type: loguniform
+      regressor__regressor__min_samples_leaf:
+        max: 20
+        min: 1
+        type: randint
+      regressor__selector__estimator__alpha:
+        max: 0.7
+        min: 0.2
+        type: loguniform
+      regressor__selector__estimator__l1_ratio:
+        max: 0.2
+        min: 0.001
+        type: loguniform
+      regressor__selector__threshold:
+        list:
+        - mean
+        - median
+        - 0.5*mean
+        - 0.5*median
+        - 1.5*mean
+        - 1.5*median
+        type: categorical
+    scoring: neg_root_mean_squared_error

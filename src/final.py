@@ -93,11 +93,10 @@ def main():
     ids = test_df.iloc[:, 0]
     X_test = test_df.iloc[:, 1:]
 
-    # need to be changed for 2 and 3
     model_files = {
-        1: "experiments/lassolars/lassolars_agg_gene_1_52bbfb3d/model.joblib",
-        2: "models/model_gene2.joblib",
-        3: "models/model_gene3.joblib"
+        1: "experiments/model-1.joblib",
+        2: "experiments/model-2.joblib",
+        3: "experiments/model-3.joblib"
     }
 
     model_file = model_files[args.gene]

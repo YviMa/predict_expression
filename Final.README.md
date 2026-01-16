@@ -4,7 +4,7 @@
 
 This submission includes trained models for predicting gene expression values for three genes. The `final.py` script loads the corresponding model for each gene, applies it to test data, and outputs predictions in TSV format.
 
-The models were trained using feature scaling and optional feature selection. Any transformations applied during training (e.g., log2 scaling) are automatically reversed in the output.
+The models were trained using feature scaling and optional feature selection. Any transformations applied during training are automatically reversed in the output.
 
 ---
 
@@ -19,20 +19,18 @@ predict_expression/
 │   └── model_gene3.joblib
 │
 ├── data/
-│   └── raw/                   # Test data files
-│       ├── gene_1_test.txt
-│       ├── gene_2_test.txt
-│       └── gene_3_test.txt
+│   ├── gene_1_test.txt         # Test data files
+│   ├── gene_2_test.txt
+│   └── gene_3_test.txt
+│       
 │
-├── predictions/               # Output prediction files (created by final.py)
+├── predictions/               # Output prediction files
 │   ├── pred_gene_1.tsv
 │   ├── pred_gene_2.tsv
-│   └── pred_gene_3.tsv
+│   └── pred_gene_3.tsv          
 │
-├── src/
-│   └── final.py               # Final prediction script
-│
-└── requirements.txt           # Required Python packages
+|
+└── final.py                   # Final prediction script
 ```
 
 ---
@@ -43,19 +41,17 @@ Create a Python environment and install the required packages:
 
 ```
 # create environment
-conda create -n predict_expression python=3.10
-conda activate epi
-
-# install required packages
-pip install -r requirements.txt
+conda create -n predict_expression
+conda activate predict_expression
 ```
 
-**Minimum packages required to run `final.py`:**
+**Packages required to run `final.py`:**
 
 * `numpy`
 * `pandas`
 * `scikit-learn`
 * `joblib`
+* `xgboost`
 
 
 ---
@@ -75,9 +71,9 @@ The `final.py` script predicts gene expression for a selected gene using a provi
 **Command lines:**
 
 ```
-python src/final.py --input data/raw/gene_1_test.txt --gene 1 --output predictions/pred_gene_1.tsv
-python src/final.py --input data/raw/gene_2_test.txt --gene 2 --output predictions/pred_gene_2.tsv
-python src/final.py --input data/raw/gene_3_test.txt --gene 3 --output predictions/pred_gene_3.tsv
+python final.py --input data/gene_1_test.txt --gene 1 --output predictions/pred_gene_1.tsv
+python final.py --input data/gene_2_test.txt --gene 2 --output predictions/pred_gene_2.tsv
+python final.py --input data/gene_3_test.txt --gene 3 --output predictions/pred_gene_3.tsv
 ```
 
 **Output:**
@@ -92,10 +88,3 @@ sample_2    1.87
 * `ID` column: sample identifiers (copied from test data).
 * `Expression` column: predicted gene expression values.
 
-
-
-## 5. Notes
-
-1. Make sure the `models/` directory contains the trained `.joblib` files for all genes.
-2. The script automatically reverses any scaling applied during training.
-3. Predictions are saved per gene in the `predictions/` folder.

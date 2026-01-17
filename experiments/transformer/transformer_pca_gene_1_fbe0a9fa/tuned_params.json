@@ -1,0 +1,9 @@
+{
+  "model_config__model_params__add_norm_dropout": 0.14156540722126018,
+  "model_config__model_params__attn_dropout": 0.11136561492232509,
+  "model_config__model_params__learning_rate": 0.003946052093516697,
+  "model_config__model_params__num_attn_blocks": 5,
+  "model_config__model_params__num_heads": 4,
+  "model_config__model_params__transformer_activation": "Tanh",
+  "selector_estimator_config__n_components": 65
+}

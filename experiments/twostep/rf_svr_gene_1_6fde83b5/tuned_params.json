@@ -1,0 +1,9 @@
+{
+  "regressor__regressor__classifier__max_depth": 11,
+  "regressor__regressor__classifier__max_features": 0.9090545612280351,
+  "regressor__regressor__classifier__min_samples_leaf": 2,
+  "regressor__regressor__regressor__C": 6.8773069808799265,
+  "regressor__regressor__regressor__epsilon": 2.052930647450518,
+  "regressor__regressor__regressor__gamma": 0.00034228173228470786,
+  "regressor__regressor__regressor__kernel": "rbf"
+}

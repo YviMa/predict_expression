@@ -21,7 +21,7 @@ estimator:
   est_params: 
     classifier_name : svc
     classifier_params: {"class_weight": "balanced"}
-    regressor_name: random_forest
+    regressor_name: elastic_net
     regressor_params: {"max_iter": 10000,"tol": 0.01}
 tuning:
   tune: true
